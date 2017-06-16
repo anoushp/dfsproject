@@ -3,9 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<!--<sql:query var="rs" dataSource="jdbc/spring">
-select id, name, email, text from offers
-</sql:query>-->
 
 
 <link href="${pageContext.request.contextPath}/static/css/main.css" rel="stylesheet" type="text/css" />
@@ -16,9 +13,9 @@ select id, name, email, text from offers
 <c:forEach var="offer" items="${offers}">
 <tr>
 
-<td><c:out value="${offer.name}"></c:out></td>
+<td><c:out value="${offer.user.name}"></c:out></td>
 
-<td><c:out value="${offer.email}"></c:out></td>
+<td><c:out value="${offer.user.email}"></c:out></td>
 
 <td><c:out value="${offer.text}"></c:out></td>
    
@@ -26,4 +23,4 @@ select id, name, email, text from offers
 </c:forEach>
 </table>
 
-<c:out value="${name}"></c:out>
+

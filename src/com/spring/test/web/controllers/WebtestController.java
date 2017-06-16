@@ -1,6 +1,7 @@
 package com.spring.test.web.controllers;
 
 
+import java.security.Principal;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -43,12 +44,14 @@ public class WebtestController {
 	}
 	
 	@RequestMapping(value="/docreate", method=RequestMethod.POST)
-	public String doCreate(Model model, @Valid Offer offer, BindingResult result){
+	public String doCreate(Model model, @Valid Offer offer, BindingResult result, Principal principal){
 		if (result.hasErrors())
 		{
 			
 			return "createoffer";
 		}
+		String username=principal.getName();
+		offer.getUser().setUsername(username);
 		offersService.create(offer);
 		return "offercreated";
 	}
