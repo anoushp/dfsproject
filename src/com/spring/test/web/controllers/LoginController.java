@@ -10,9 +10,11 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.spring.test.web.dao.FormValidationGroup;
 import com.spring.test.web.dao.User;
 import com.spring.test.web.service.UsersService;
 
@@ -60,7 +62,7 @@ public String showAdmin(Model model){
 	return "admin";
 }
 @RequestMapping(value="/createaccount", method=RequestMethod.POST)	
-public String createAccount(@Valid User user, BindingResult result){
+public String createAccount(@Validated(FormValidationGroup.class) User user, BindingResult result){
 	
 	if (result.hasErrors()){
 	return "newaccount";

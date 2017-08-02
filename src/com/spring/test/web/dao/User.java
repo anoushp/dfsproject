@@ -1,5 +1,8 @@
 package com.spring.test.web.dao;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -7,22 +10,27 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
 import com.spring.test.web.validation.ValidEmail;
-
+@Entity
+@Table(name="users")
 public class User {
-	@NotBlank(message="Username cannot be blank")
-	@Size(min=5, max=15)
-	@Pattern(regexp="^\\w{5,}$", message="username can consist only of numbers, letters and the underscore character")
+	
+	@NotBlank(message="Username cannot be blank", groups={PersistenceValidationGroup.class,FormValidationGroup.class})
+	@Size(min=5, max=15,groups={PersistenceValidationGroup.class,FormValidationGroup.class})
+	@Pattern(regexp="^\\w{5,}$", message="username can consist only of numbers, letters and the underscore character",groups={PersistenceValidationGroup.class,FormValidationGroup.class})
+	@Id
 	private String username;
-	@NotBlank(message="Password cannot be blank")
-	@Pattern(regexp="^\\S+$", message="Password cannot contain spaces")
-	@Size(min=5, max=15, message="Password must be between 5 and 15 characters long")
+	
+	@NotBlank(message="Password cannot be blank",groups={PersistenceValidationGroup.class,FormValidationGroup.class})
+	@Pattern(regexp="^\\S+$", message="Password cannot contain spaces",groups={PersistenceValidationGroup.class,FormValidationGroup.class})
+	@Size(min=5, max=15, message="Password must be between 5 and 15 characters long",groups={FormValidationGroup.class})
 	private String password;
-	@NotBlank(message="Name cannot be blank")
-	@Size(min=5, max=60)
+	
+	@NotBlank(message="Name cannot be blank",groups={PersistenceValidationGroup.class,FormValidationGroup.class})
+	@Size(min=5, max=60,groups={PersistenceValidationGroup.class,FormValidationGroup.class})
 	private String name;
 	private boolean enabled=false;
 	private String authority;
-	@ValidEmail(message="this is not a valid email ")
+	@ValidEmail(message="this is not a valid email ",groups={PersistenceValidationGroup.class,FormValidationGroup.class})
 	private String email;
 	
 	public User(){
