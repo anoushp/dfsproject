@@ -1,5 +1,7 @@
 package com.spring.test.web.dao;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -12,8 +14,13 @@ import org.hibernate.validator.constraints.NotBlank;
 import com.spring.test.web.validation.ValidEmail;
 @Entity
 @Table(name="users")
-public class User {
+public class User implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6999373167529034746L;
+
 	@NotBlank(message="Username cannot be blank", groups={PersistenceValidationGroup.class,FormValidationGroup.class})
 	@Size(min=5, max=15,groups={PersistenceValidationGroup.class,FormValidationGroup.class})
 	@Pattern(regexp="^\\w{5,}$", message="username can consist only of numbers, letters and the underscore character",groups={PersistenceValidationGroup.class,FormValidationGroup.class})
