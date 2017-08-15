@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.apoghosyan.spring.web</groupId>
-  <artifactId>test-spring1</artifactId>
+  <artifactId>dfsmodel</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
   <build>
@@ -155,6 +155,32 @@
   		<groupId>org.springframework.webflow</groupId>
   		<artifactId>spring-webflow</artifactId>
   		<version>2.4.4.RELEASE</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.codehaus.jackson</groupId>
+  		<artifactId>jackson-mapper-asl</artifactId>
+  		<version>1.9.13</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.codehaus.jackson</groupId>
+  		<artifactId>jackson-core-asl</artifactId>
+  		<version>1.9.13</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.fasterxml.jackson.core</groupId>
+  		<artifactId>jackson-databind</artifactId>
+  		<version>2.8.4</version>
+  		
+  	</dependency>
+  	<dependency>
+  		<groupId>org.springframework</groupId>
+  		<artifactId>spring-context-support</artifactId>
+  		<version>4.3.3.RELEASE</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.sun.mail</groupId>
+  		<artifactId>javax.mail</artifactId>
+  		<version>1.5.6</version>
   	</dependency>
   </dependencies>
 </project>

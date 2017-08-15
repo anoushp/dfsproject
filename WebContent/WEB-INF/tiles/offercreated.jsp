@@ -1,3 +1,3 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-Offer Created: <a href="${pageContext.request.contextPath}/offers">clicktoView</a>
+Offer Created: <a href="${pageContext.request.contextPath}/home">clicktoView</a>

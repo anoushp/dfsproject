@@ -1,6 +1,10 @@
 package com.spring.test.web.controllers;
 
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -11,10 +15,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spring.test.web.dao.FormValidationGroup;
+import com.spring.test.web.dao.Message;
 import com.spring.test.web.dao.User;
 import com.spring.test.web.service.UsersService;
 
@@ -53,6 +60,12 @@ public String showDenied(){
 	return "denied";
 	
 }
+@RequestMapping("/messages")	
+public String showMessages(){
+	
+	return "messages";
+	
+}
 
 @RequestMapping("/admin")
 public String showAdmin(Model model){
@@ -82,6 +95,35 @@ public String createAccount(@Validated(FormValidationGroup.class) User user, Bin
 		
 	}
 	return "accountcreated";
+	
+}
+@RequestMapping(value="/getmessages", method=RequestMethod.GET,produces="application/json")
+@ResponseBody
+public Map<String, Object> getMessages(Principal principal){
+	List<Message> messages=null;
+	if  (principal==null)
+		messages=new ArrayList();
+	else {
+		String username=principal.getName();
+		messages=usersService.getMessages(username);
+	}
+	Map<String, Object> data=new HashMap<String, Object>();
+	data.put("messages", messages);
+	data.put("number", messages.size());
+	return data;
+	
+}
+@RequestMapping(value="/sendmessage", method=RequestMethod.POST,produces="application/json")
+@ResponseBody
+public Map<String, Object> getMessages(Principal principal, @RequestBody Map<String, Object> data){
+	String text=(String)data.get("text");
+	String name=(String)data.get("email");
+	String email=(String)data.get("email");
+	Integer target=(Integer)data.get("target");
+	Map<String, Object> rval=new HashMap<String, Object>();
+	rval.put("success", true);
+	rval.put("target", target);
+	return rval;
 	
 }
 

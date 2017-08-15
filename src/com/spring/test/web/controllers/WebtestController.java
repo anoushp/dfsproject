@@ -33,12 +33,6 @@ public class WebtestController {
 	}
 
 
-	@RequestMapping("/offers")
-	public String showOffers(Model model){
-		List<Offer> offers=offersService.getCurrent();
-		model.addAttribute("offers", offers);
-		return "offers";
-	}
 	
 	@RequestMapping("/createoffer")
 	public String createoffer(Model model, Principal principal){
