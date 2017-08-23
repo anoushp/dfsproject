@@ -22,10 +22,13 @@
 	<security:intercept-url pattern="/message" access="permitAll" />
 	    <!-- <security:intercept-url pattern="/admin" access="hasRole('ROLE_ADMIN')" />-->
 		<security:intercept-url pattern="/createoffer" access="isAuthenticated()" />
+		<security:intercept-url pattern="/updateuser" access="isAuthenticated()" />
 		<security:intercept-url pattern="/messages" access="isAuthenticated()" />
 		<security:intercept-url pattern="/sendmessage" access="isAuthenticated()" />
 		<security:intercept-url pattern="/docreate" access="isAuthenticated()" />
+		<security:intercept-url pattern="/doupdateuser" access="isAuthenticated()" />
 		<security:intercept-url pattern="/offercreated" access="isAuthenticated()" />
+		<security:intercept-url pattern="/userupdated" access="isAuthenticated()" />
 		<security:intercept-url pattern="/offerdeleted" access="isAuthenticated()" />
 		<security:intercept-url pattern="/getmessages" access="isAuthenticated()" />
 		<security:intercept-url pattern="/" access="permitAll" />

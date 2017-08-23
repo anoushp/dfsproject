@@ -27,10 +27,14 @@ public class HomeController {
 		model.addAttribute("offers", offers);
 		if (principal!=null){
 			hasOffer=offersService.hasOffer(principal.getName());
+			model.addAttribute("userDetails", principal.getName());
 	
-		}
+		} 
+		else
+			model.addAttribute("userDetails", "");
 		model.addAttribute("hasOffer", hasOffer);
 		logger.info("showing home page");
+		
 		return "home";
 	}
 

@@ -4,6 +4,8 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <p />
+<img src="<c:url value='/static/images/dfsproject.png' />"/>
+<span class="message">Welcome ${userDetails}</span>
 <table class="offers">
 	<tr>
 		<td>Name</td>

@@ -8,6 +8,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -77,9 +78,19 @@ public User getUser(String username){
 	Criteria crit=session().createCriteria(User.class);
 	crit.add(Restrictions.eq("username", username));
 	//or crit.add(Restrictions.ideq(username));
+	
 	return (User)crit.uniqueResult();
 	
 }
+public void updateUser(User user) {
+	Query q = session().createQuery("from User where username = :username ");
+	q.setParameter("username", user.getUsername());
+	User u = (User)q.list().get(0);
+
+	u.setName(user.getName());
+	u.setEmail(user.getEmail());
 	
+	session().update(u);
+}
 }
 

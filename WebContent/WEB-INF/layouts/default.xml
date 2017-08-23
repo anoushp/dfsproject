@@ -40,9 +40,17 @@
 <put-attribute name="title" value="Create Offer"></put-attribute>
 <put-attribute name="content" value="/WEB-INF/tiles/createoffer.jsp"></put-attribute>
 </definition>
+<definition name="updateuser" extends="offers.base">
+<put-attribute name="title" value="Update your account details"></put-attribute>
+<put-attribute name="content" value="/WEB-INF/tiles/updateuser.jsp"></put-attribute>
+</definition>
 <definition name="offercreated" extends="offers.base">
 <put-attribute name="title" value="Offer Created"></put-attribute>
 <put-attribute name="content" value="/WEB-INF/tiles/offercreated.jsp"></put-attribute>
+</definition>
+<definition name="userupdated" extends="offers.base">
+<put-attribute name="title" value="User updated"></put-attribute>
+<put-attribute name="content" value="/WEB-INF/tiles/userupdated.jsp"></put-attribute>
 </definition>
 <definition name="offerdeleted" extends="offers.base">
 <put-attribute name="title" value="Offer Deleted"></put-attribute>

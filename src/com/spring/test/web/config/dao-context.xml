@@ -12,7 +12,7 @@
    <beans profile="production">
 	<context:annotation-config></context:annotation-config>
 	<context:component-scan base-package="com.spring.test.web.dao"></context:component-scan>
-	<jee:jndi-lookup jndi-name="jdbc/spring" id="dataSource"
+	<jee:jndi-lookup jndi-name="jdbc/spring2" id="dataSource"
 		expected-type="javax.sql.DataSource">
 	</jee:jndi-lookup>
 	<bean id="sessionFactory"
