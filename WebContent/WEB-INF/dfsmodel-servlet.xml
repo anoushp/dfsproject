@@ -13,8 +13,16 @@
 	<context:component-scan
 		base-package="com.spring.test.web.controllers">
 	</context:component-scan>
-	<mvc:annotation-driven></mvc:annotation-driven>
 	
+	<context:component-scan base-package="com.spring.test.web.config" />
+	<mvc:annotation-driven conversion-service="conversionService"/>
+	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <bean class="com.spring.test.web.dao.CategoryConverter" />              
+            </set>
+        </property>
+    </bean>
 	<bean id="messageSource"
 		class="org.springframework.context.support.ResourceBundleMessageSource">
 	<property name="basename" value="com.spring.test.web.messages.messages"></property>

@@ -40,6 +40,30 @@
 <put-attribute name="title" value="Create Offer"></put-attribute>
 <put-attribute name="content" value="/WEB-INF/tiles/createoffer.jsp"></put-attribute>
 </definition>
+<definition name="createattribute" extends="offers.base">
+<put-attribute name="title" value="Create Attribute"></put-attribute>
+<put-attribute name="content" value="/WEB-INF/tiles/createattribute.jsp"></put-attribute>
+</definition>
+<definition name="addindicator" extends="offers.base">
+<put-attribute name="title" value="Add/Edit Indicator"></put-attribute>
+<put-attribute name="content" value="/WEB-INF/tiles/addindicator.jsp"></put-attribute>
+</definition>
+<definition name="indicatorcreated" extends="offers.base">
+<put-attribute name="title" value="Add/Edit Indicator"></put-attribute>
+<put-attribute name="content" value="/WEB-INF/tiles/indicatorcreated.jsp"></put-attribute>
+</definition>
+<definition name="viewindicators" extends="offers.base">
+<put-attribute name="title" value="View Indicator"></put-attribute>
+<put-attribute name="content" value="/WEB-INF/tiles/viewindicators.jsp"></put-attribute>
+</definition>
+<definition name="editattribute" extends="offers.base">
+<put-attribute name="title" value="Edit Attribute"></put-attribute>
+<put-attribute name="content" value="/WEB-INF/tiles/editattribute.jsp"></put-attribute>
+</definition>
+<definition name="attributeupdatesuccess" extends="offers.base">
+<put-attribute name="title" value="Edit Attribute"></put-attribute>
+<put-attribute name="content" value="/WEB-INF/tiles/attributeupdatesuccess.jsp"></put-attribute>
+</definition>
 <definition name="updateuser" extends="offers.base">
 <put-attribute name="title" value="Update your account details"></put-attribute>
 <put-attribute name="content" value="/WEB-INF/tiles/updateuser.jsp"></put-attribute>

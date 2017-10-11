@@ -14,7 +14,9 @@
 			offer</a>
 	</c:otherwise>
 </c:choose>
-
+<sec:authorize access="isAuthenticated()">
+	<a href="${pageContext.request.contextPath}/attributes">Create new Attribute</a>
+</sec:authorize>
 <sec:authorize access="isAuthenticated()">
 	<a href="${pageContext.request.contextPath}/updateuser">Update your account details</a>
 </sec:authorize>

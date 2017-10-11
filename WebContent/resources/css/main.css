@@ -71,6 +71,14 @@ div.header {
 	height: 80px;
 	background-color: blue;
 }
+div.indicatormessage {
+	color:white;
+	background-color: blue;
+}
+div.duplicateerror {
+	color:white;
+	background-color: red;
+}
 div.header img {
 	text-align: left;
 	width: 110px;
