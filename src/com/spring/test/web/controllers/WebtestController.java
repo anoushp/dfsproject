@@ -1,11 +1,16 @@
 package com.spring.test.web.controllers;
 
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
+
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
 
 import javax.validation.Valid;
+import javax.validation.Validation;
+import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
@@ -13,6 +18,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -34,9 +40,12 @@ import com.spring.test.web.dao.IndicatorForm;
 import com.spring.test.web.dao.KPACategory;
 import com.spring.test.web.dao.Attribute;
 import com.spring.test.web.dao.CategoryConverter;
+import com.spring.test.web.dao.Dfstest;
+import com.spring.test.web.dao.DfstestForm;
 import com.spring.test.web.dao.Offer;
 import com.spring.test.web.dao.User;
 import com.spring.test.web.service.AttributesService;
+import com.spring.test.web.service.DfstestsService;
 import com.spring.test.web.service.IndicatorsService;
 import com.spring.test.web.service.KPACategoryService;
 import com.spring.test.web.service.OffersService;
@@ -45,6 +54,7 @@ import com.spring.test.web.service.UsersService;
 @Controller
 public class WebtestController {
 	private OffersService offersService;
+	private DfstestsService dfstestsService;
 	private UsersService usersService;
 	private AttributesService attributesService;
 	private IndicatorsService indicatorsService;
@@ -56,6 +66,12 @@ public class WebtestController {
 		indicators.add(new Indicator());
 		indicators.add(new Indicator());
 		indicators.add(new Indicator());
+	}
+
+
+	@Autowired
+	public void setDfstestsService(DfstestsService dfstestsService) {
+		this.dfstestsService = dfstestsService;
 	}
 
 	@Autowired
@@ -78,8 +94,76 @@ public class WebtestController {
 	public void setIndicatorsService(IndicatorsService indicatorsService) {
 		this.indicatorsService = indicatorsService;
 	}
+	@RequestMapping("/proceedDfSTest")
+	public String proceedTestResults(Model model, @Valid @ModelAttribute("dfstestform") DfstestForm dfstestForm, BindingResult result, Principal principal)
+	{
+		List<Dfstest> dfstests = dfstestForm.getDfstests();
+		String username=principal.getName();
+	
+
+		if (result.hasErrors())
+		{
+			HashMap <Attribute, List<Indicator>> hm = new HashMap<Attribute, List<Indicator>>();
+			List<Attribute> attrs=attributesService.getAllAttributes();
+
+			for (Attribute attr :attrs){
+				int idattr=attr.getId();
+				List<Indicator> ind_list=indicatorsService.getIndicators(idattr);
+				hm.put(attr, ind_list);
+			}
 
 
+			model.addAttribute("dfstestform", dfstestForm);
+			model.addAttribute("dfsmap", hm);
+			model.addAttribute("formError", "error");
+			System.out.println("ERRORS");
+			for (Object object : result.getAllErrors()) {
+				if(object instanceof FieldError) {
+					FieldError fieldError = (FieldError) object;
+
+					System.out.println(fieldError.getCode());
+					System.out.println(fieldError.getField());
+				}
+			}
+			
+			return "showdfstest";
+		}
+		for (Dfstest dfs: dfstests){
+			dfs.getUser().setUsername(username);
+			dfstestsService.saveOrUpdate(dfs);
+		}
+		return "dfstestcompleted";
+	}
+	@RequestMapping("/dfstest")
+	public String createDfstest(Model model, Principal principal){
+		HashMap <Attribute, List<Indicator>> hm = new HashMap<Attribute, List<Indicator>>();
+		List<Attribute> attrs=attributesService.getAllAttributes();
+		List<Dfstest> dfstests=null;
+		String username="";
+		DfstestForm dfstestForm=new DfstestForm();
+		for (Attribute attr :attrs){
+			int idattr=attr.getId();
+			List<Indicator> ind_list=indicatorsService.getIndicators(idattr);
+			hm.put(attr, ind_list);
+		}
+
+		if (principal!=null){
+			username=principal.getName();
+			dfstests =dfstestsService.getDfstests(username);
+		}
+		if (dfstests==null){
+			dfstests= new ArrayList<Dfstest>();
+			for(int i=0; i<attributesService.getAllAttributes().size(); i++){
+				dfstests.add(new Dfstest());
+			}
+		}
+
+		dfstestForm.setDfstests(dfstests);
+		
+		model.addAttribute("dfstestform", dfstestForm);
+		model.addAttribute("dfsmap", hm);
+		return "showdfstest";
+	}
 
 	@RequestMapping("/createoffer")
 	public String createoffer(Model model, Principal principal){
@@ -151,19 +235,19 @@ public class WebtestController {
 						model.addAttribute("updateFlag", "created");
 					ind.getAttribute().setId(attr_id);
 					indicatorsService.saveOrUpdate(ind);
-					
+
 				}
 			}
-			
-			
+
+
 			model.addAttribute("attribute", attr);
 			//offer.getUser().setUsername(username);
 			//offersService.saveOrUpdate(offer);
 			return "indicatorcreated";
 		}
 		else{
-			
-		//	indicatorsService.delete(indicator.getId());
+
+			//	indicatorsService.delete(indicator.getId());
 			//offersService.delete(offer.getId());
 			return "indicatordeleted";
 		}
@@ -172,7 +256,7 @@ public class WebtestController {
 	@RequestMapping(value="/attributes/{attr_id}/editattribute/{id}", method=RequestMethod.GET)
 	public String editIndicator(@PathVariable("attr_id") String attr_id, @PathVariable("id") String id, Model model){
 		Indicator ind=null;
-		
+
 		Attribute attr=attributesService.getAttribute(Integer.valueOf(attr_id).intValue());	
 		System.out.println("ATTR_ID"+ attr.getId());
 		ind=indicatorsService.getIndicator(Integer.valueOf(id).intValue());
@@ -196,14 +280,16 @@ public class WebtestController {
 		return "createattribute";
 	}
 	@RequestMapping(value="/docreateattribute", method=RequestMethod.POST)
-	public String doCreateIndicator(Model model, @Validated(FormValidationGroup.class) Attribute attribute, BindingResult result, Principal principal, @RequestParam(value="delete", required=false) String delete){
+	public String doCreateIndicator(Model model, @Valid Attribute attribute, BindingResult result, Principal principal, @RequestParam(value="delete", required=false) String delete){
 		List<Attribute> attributes=attributesService.getAllAttributes();
+		List<KPACategory> cat_list=kpaCategoryService.getKPACategory();
 
 		if (attributesService.getAttribute(attribute.getName())!=null)
 		{
 
 			model.addAttribute("attribute", attribute);
 			model.addAttribute("attributes", attributes);
+			model.addAttribute("cat_list", cat_list);
 			result.rejectValue("name", "DuplicateKey.attribute.name");
 			return "createattribute";
 		}
@@ -211,6 +297,7 @@ public class WebtestController {
 		{
 			System.out.println("ERROR"+result.getFieldError());
 			model.addAttribute("attributes", attributes);
+			model.addAttribute("cat_list", cat_list);
 			return "createattribute";
 		}
 
@@ -219,6 +306,7 @@ public class WebtestController {
 		model.addAttribute("attributes", attributes);
 		model.addAttribute("attribute", new Attribute());
 		model.addAttribute("attributecreated", "Attribute Successfully Created");
+		model.addAttribute("cat_list", cat_list);
 		return "createattribute";	
 
 
@@ -240,7 +328,7 @@ public class WebtestController {
 		System.out.println("zzzzzzz");
 		Attribute attr=attributesService.getAttribute(id);	
 		IndicatorForm ind_form =new IndicatorForm();
-		
+
 		int idattr=attr.getId();
 		List<Indicator> ind_list=indicatorsService.getIndicators(idattr);
 		System.out.println("yyyyyy");
@@ -250,9 +338,9 @@ public class WebtestController {
 		}
 		else{	
 			System.out.println("else");
-		ind_form.setIndicators(indicators);}
-		
-		
+			ind_form.setIndicators(indicators);}
+
+
 		model.addAttribute("indicatorForm", ind_form);		
 		model.addAttribute("attribute", attr);
 		return "addindicator";
@@ -336,5 +424,6 @@ public class WebtestController {
 		return "userupdated";
 
 	}
+
 
 }

@@ -40,6 +40,14 @@
 <put-attribute name="title" value="Create Offer"></put-attribute>
 <put-attribute name="content" value="/WEB-INF/tiles/createoffer.jsp"></put-attribute>
 </definition>
+<definition name="showdfstest" extends="offers.base">
+<put-attribute name="title" value="Take DfS Test"></put-attribute>
+<put-attribute name="content" value="/WEB-INF/tiles/showdfstest.jsp"></put-attribute>
+</definition>
+<definition name="dfstestcompleted" extends="offers.base">
+<put-attribute name="title" value="Take DfS Test"></put-attribute>
+<put-attribute name="content" value="/WEB-INF/tiles/dfstestcompleted.jsp"></put-attribute>
+</definition>
 <definition name="createattribute" extends="offers.base">
 <put-attribute name="title" value="Create Attribute"></put-attribute>
 <put-attribute name="content" value="/WEB-INF/tiles/createattribute.jsp"></put-attribute>

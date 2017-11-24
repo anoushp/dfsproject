@@ -14,6 +14,6 @@
 <tr><td>Email: </td> <td><sf:input path="email" name="email" type="text"/><div class="error"><sf:errors path="email"></sf:errors></div></td></tr>
 <tr><td>Password: </td> <td><sf:input id="password" path="password" name="password" type="text"/><div class="error"><sf:errors path="password"></sf:errors></div></td></tr>
 <tr><td>Confirm Password: </td> <td><input id="confirmpass" name="confirmpass" type="text"/><div id="matchpass"></div></td></tr>
-<tr><td></td><td><input value="create Account" type="submit"></td></tr>
+<tr><td></td><td><input value="Create Account" type="submit" class="submitButton"></td></tr>
 </table>
 </sf:form>

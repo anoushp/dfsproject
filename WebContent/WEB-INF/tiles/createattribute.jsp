@@ -83,7 +83,7 @@
 		</tr>
 		<tr>
 			<td></td>
-			<td><input value="Add Attribute" type="submit"></td>
+			<td><input value="Add Attribute" type="submit" class="submitButton"></td>
 		</tr>
 
 		

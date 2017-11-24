@@ -16,7 +16,7 @@
 	}
 	$(document).ready(onReady);
 </script>
-
+<b> Attribute : ${attribute.name}</b>
 <sf:form method="post"
 	action="${pageContext.request.contextPath}/attributes/${attribute.id}/docreateindicator"
 	commandName="indicatorForm">
@@ -40,7 +40,7 @@
 		</c:forEach>
 		<tr>
 			<td></td>
-			<td><input value="Save Indicator" type="submit"></td>
+			<td><input value="Save Indicator" type="submit" class="submitButton"></td>
 		</tr>
 
 		<c:if test="${indicator.id != 0}">
@@ -52,7 +52,7 @@
 			<tr>
 				<td></td>
 				<td><input class="delete control" name="delete" id="delete"
-					value="Delete Indicator" type="submit"></td>
+					value="Delete Indicator" type="submit" class="submitButton"></td>
 			</tr>
 		</c:if> 
 	</table>

@@ -24,7 +24,7 @@
 		</tr>
 		<tr>
 			<td></td>
-			<td><input value="Save Details" type="submit"></td>
+			<td><input value="Save Details" type="submit" class="submitButton"></td>
 		</tr>
 		
 

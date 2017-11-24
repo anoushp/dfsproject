@@ -46,6 +46,8 @@
        
 });   
 </script>
+<a href="${pageContext.request.contextPath}/attributes">View List of Attributes</a>
+<br></br>
 List of indicators for attribute "${attribute.name}"
 <div id="indicatorFromResponse"></div>
 <table class="formtable">

@@ -146,6 +146,54 @@ span.alert {
 	display: block;
 	font-weight: bold;
 	color: green;
+}	
+div.ss-form-entry table{
+background:#fff;
+width:100%;
+margin: 0 0 1.125em;
+border-collapse:collapse;
+border-spacing: 0;
+border: 0px;
+width: auto; 
+}
+div.ss-form-entry table tr:nth-child(odd){
+	background-color:#DBE5F1;
+}
+h4.ss-attr-desc {
+	display:block;
+	font-family:Arial;
+	font-size:20px;
+	font-weight: bold;
 	
+}
+div.ss-form-entry table td{
+font-family:Arial;
+font-size:16px;
+padding: 15px 25px 15px 0; 
+}
+p.ss-par {
+	font-family:Arial;
+	font-size: 16px;
+} 
+input[type="radio"]{
+	box-sizing: border-box;
+	padding: 0;
+	display:inline;
+	background-color:red;
+}
+.errorblock {
+	color: #000;
+	background-color: #ffEEEE;
+	border: 3px solid #ff0000;
+	padding: 8px;
+	margin: 16px;
+}
+.submitButton {
+	color:white;
+	background:blue;
+	border: 1px solid;
+	font-family:Arial;
+	font-size: 16px;
 	
+}	
 }

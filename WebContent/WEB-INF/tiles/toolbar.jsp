@@ -4,7 +4,7 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
-<c:choose>
+<%-- <c:choose>
 	<c:when test="${hasOffer}">
 		<a href="${pageContext.request.contextPath}/createoffer">Edit or
 			remove your current offer</a>
@@ -13,14 +13,16 @@
 		<a href="${pageContext.request.contextPath}/createoffer">Add new
 			offer</a>
 	</c:otherwise>
-</c:choose>
-<sec:authorize access="isAuthenticated()">
-	<a href="${pageContext.request.contextPath}/attributes">Create new Attribute</a>
+</c:choose> --%>
+<sec:authorize access="hasRole('ROLE_ADMIN')">
+	<a href="${pageContext.request.contextPath}/attributes">View Attributes List</a>
 </sec:authorize>
 <sec:authorize access="isAuthenticated()">
 	<a href="${pageContext.request.contextPath}/updateuser">Update your account details</a>
 </sec:authorize>
-
+<sec:authorize access="isAuthenticated()">
+	<a href="${pageContext.request.contextPath}/dfstest">Start Dfs Test</a>
+</sec:authorize>
 <%-- <sec:authorize access="!isAuthenticated()">
 <p><a href="<c:url value='/login'/>">Log In</a></p>
 </sec:authorize>
