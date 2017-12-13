@@ -14,6 +14,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,104 +28,148 @@ import com.spring.test.web.service.UsersService;
 
 @Controller
 public class LoginController {
-	
-    private UsersService usersService;
-	
-	
+
+	private UsersService usersService;
+
 	@Autowired
 	public void setUsersService(UsersService usersService) {
 		this.usersService = usersService;
 	}
 
+	@RequestMapping("/login")
+	public String showLogin() {
+		return "login";
 
-@RequestMapping("/login")	
-public String showLogin(){
-	return "login";
-	
-}
-@RequestMapping("/newaccount")	
-public String showNewAccount(Model model){
-	model.addAttribute("user", new User());
-	return "newaccount";
-	
-}
-@RequestMapping("/loggedout")	
-public String showLoggedOut(){
-	
-	return "loggedout";
-	
-}
-@RequestMapping("/denied")	
-public String showDenied(){
-	
-	return "denied";
-	
-}
-@RequestMapping("/messages")	
-public String showMessages(){
-	
-	return "messages";
-	
-}
+	}
 
-@RequestMapping("/admin")
-public String showAdmin(Model model){
-	
-	List<User> users=usersService.getAllUsers();
-	model.addAttribute("users", users);
-	return "admin";
-}
-@RequestMapping(value="/createaccount", method=RequestMethod.POST)	
-public String createAccount(@Validated(FormValidationGroup.class) User user, BindingResult result){
-	
-	if (result.hasErrors()){
-	return "newaccount";
-	}
-	user.setAuthority("ROLE_USER");
-	user.setEnabled(true);
-	if (usersService.exists(user.getUsername())){
-		result.rejectValue("username", "DuplicateKey.user.username");
+	@RequestMapping("/newaccount")
+	public String showNewAccount(Model model) {
+		model.addAttribute("user", new User());
 		return "newaccount";
+
 	}
-	try {usersService.create(user);
-	
+
+	@RequestMapping("/loggedout")
+	public String showLoggedOut() {
+
+		return "loggedout";
+
 	}
-	catch (DuplicateKeyException e){
-		result.rejectValue("username", "DuplicateKey.user.username");
-		return "newaccount";
-		
+
+	@RequestMapping("/denied")
+	public String showDenied() {
+
+		return "denied";
+
 	}
-	return "accountcreated";
-	
-}
-@RequestMapping(value="/getmessages", method=RequestMethod.GET,produces="application/json")
-@ResponseBody
-public Map<String, Object> getMessages(Principal principal){
-	List<Message> messages=null;
-	if  (principal==null)
-		messages=new ArrayList();
-	else {
-		String username=principal.getName();
-		messages=usersService.getMessages(username);
+
+	@RequestMapping("/messages")
+	public String showMessages() {
+
+		return "messages";
+
 	}
-	Map<String, Object> data=new HashMap<String, Object>();
-	data.put("messages", messages);
-	data.put("number", messages.size());
-	return data;
-	
-}
-@RequestMapping(value="/sendmessage", method=RequestMethod.POST,produces="application/json")
-@ResponseBody
-public Map<String, Object> getMessages(Principal principal, @RequestBody Map<String, Object> data){
-	String text=(String)data.get("text");
-	String name=(String)data.get("email");
-	String email=(String)data.get("email");
-	Integer target=(Integer)data.get("target");
-	Map<String, Object> rval=new HashMap<String, Object>();
-	rval.put("success", true);
-	rval.put("target", target);
-	return rval;
-	
-}
+
+	@RequestMapping("/admin")
+	public String showAdmin(Model model) {
+
+		List<User> users = usersService.getAllUsers();
+		model.addAttribute("users", users);
+		return "admin";
+	}
+
+	@RequestMapping(value = "/createaccount", method = RequestMethod.POST)
+	public String createAccount(@Validated(FormValidationGroup.class) User user, BindingResult result) {
+
+		if (result.hasErrors()) {
+			return "newaccount";
+		}
+		user.setAuthority("ROLE_USER");
+		user.setEnabled(true);
+		if (usersService.exists(user.getUsername())) {
+			result.rejectValue("username", "DuplicateKey.user.username");
+			return "newaccount";
+		}
+		try {
+			usersService.create(user);
+
+		} catch (DuplicateKeyException e) {
+			result.rejectValue("username", "DuplicateKey.user.username");
+			return "newaccount";
+
+		}
+		return "accountcreated";
+
+	}
+
+	@RequestMapping(value = "/getmessages", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public Map<String, Object> getMessages(Principal principal) {
+		List<Message> messages = null;
+		if (principal == null)
+			messages = new ArrayList();
+		else {
+			String username = principal.getName();
+			messages = usersService.getMessages(username);
+		}
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("messages", messages);
+		data.put("number", messages.size());
+		return data;
+
+	}
+
+	@RequestMapping(value = "/sendmessage", method = RequestMethod.POST, produces = "application/json")
+	@ResponseBody
+	public Map<String, Object> getMessages(Principal principal, @RequestBody Map<String, Object> data) {
+		String text = (String) data.get("text");
+		String name = (String) data.get("email");
+		String email = (String) data.get("email");
+		Integer target = (Integer) data.get("target");
+		Map<String, Object> rval = new HashMap<String, Object>();
+		rval.put("success", true);
+		rval.put("target", target);
+		return rval;
+
+	}
+
+	@RequestMapping("/updateuser")
+	public String updateuser(Model model, Principal principal) {
+		User user = null;
+		if (principal != null) {
+			String username = principal.getName();
+			System.out.println("USERNAME  " + username);
+			// User u=(User)principal;
+			user = usersService.getUser(username);
+		}
+		if (user == null)
+			user = new User();
+		model.addAttribute("user", user);
+		return "updateuser";
+	}
+
+	@RequestMapping(value = "/doupdateuser", method = RequestMethod.POST)
+	public String doUpdateUser(Model model, @Validated(FormValidationGroup.class) User user, BindingResult result,
+			Principal principal) {
+
+		if (result.hasErrors()) {
+			for (Object object : result.getAllErrors()) {
+				if (object instanceof FieldError) {
+					FieldError fieldError = (FieldError) object;
+
+					System.out.println(fieldError.getCode());
+					System.out.println(fieldError.getField());
+					if (!fieldError.getField().equals("password"))
+						return "updateuser";
+				}
+
+			}
+
+		}
+
+		usersService.saveOrUpdate(user);
+		return "userupdated";
+
+	}
 
 }

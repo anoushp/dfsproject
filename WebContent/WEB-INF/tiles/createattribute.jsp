@@ -51,6 +51,9 @@
 <c:if test="${attributecreated != null}">
 <div class="indicatormessage">${attributecreated}</div>
 </c:if>
+<c:if test="${error != null}">
+<div class="errorblock">Error: Please check you filled all the fields required!</div>
+</c:if>
 <div id="attributeFromResponse"></div>
 <table class="formtable">
 <tr><td>Attribute Description</td></tr>
@@ -71,14 +74,15 @@
 	action="${pageContext.request.contextPath}/docreateattribute"
 	commandName="attribute">
 	<sf:input type="hidden" name="id" path="id" />
+	<sf:input type="hidden" name="weight" path="weight" value="0.1" />
 	<table class="formtable">
 		<tr>
 			<td>Description :</td>
 			<td><sf:input path="name" name="name" type="text" /><br />
 			<div class="error"><sf:errors path="name"></sf:errors></div></td>
 			<td>
-			<sf:select path="kpaCategories" name="kpaCategories" items="${cat_list}" multiple="true" itemValue="id" itemLabel="category"/>
-    			
+			<sf:select path="kpaCategories" name="kpaCategories" items="${cat_list}" multiple="false" itemValue="id" itemLabel="category"/>
+    		<div class="error"><sf:errors path="kpaCategories"></sf:errors></div>	
 			</td>
 		</tr>
 		<tr>

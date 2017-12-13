@@ -1,6 +1,5 @@
 package com.spring.test.web.controllers;
 
-
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 
 import java.security.Principal;
@@ -12,6 +11,7 @@ import javax.validation.Valid;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.dao.DataAccessException;
@@ -38,12 +38,19 @@ import com.spring.test.web.dao.FormValidationGroup;
 import com.spring.test.web.dao.Indicator;
 import com.spring.test.web.dao.IndicatorForm;
 import com.spring.test.web.dao.KPACategory;
+import com.spring.test.web.dao.Assessment;
+import com.spring.test.web.dao.AssessmentDetails;
+import com.spring.test.web.dao.AssessmentForm;
+import com.spring.test.web.dao.AssessmentId;
 import com.spring.test.web.dao.Attribute;
+import com.spring.test.web.dao.AttributeForm;
 import com.spring.test.web.dao.CategoryConverter;
 import com.spring.test.web.dao.Dfstest;
 import com.spring.test.web.dao.DfstestForm;
 import com.spring.test.web.dao.Offer;
 import com.spring.test.web.dao.User;
+import com.spring.test.web.service.AssessmentDetailsService;
+import com.spring.test.web.service.AssessmentsService;
 import com.spring.test.web.service.AttributesService;
 import com.spring.test.web.service.DfstestsService;
 import com.spring.test.web.service.IndicatorsService;
@@ -55,19 +62,19 @@ import com.spring.test.web.service.UsersService;
 public class WebtestController {
 	private OffersService offersService;
 	private DfstestsService dfstestsService;
-	private UsersService usersService;
+	private AssessmentsService assessmentsService;
+	private AssessmentDetailsService assessmentDetailsService;
 	private AttributesService attributesService;
 	private IndicatorsService indicatorsService;
 	private KPACategoryService kpaCategoryService;
 	private static List<Indicator> indicators = new ArrayList<Indicator>();
-	static{
+	static {
 		indicators.add(new Indicator());
 		indicators.add(new Indicator());
 		indicators.add(new Indicator());
 		indicators.add(new Indicator());
 		indicators.add(new Indicator());
 	}
-
 
 	@Autowired
 	public void setDfstestsService(DfstestsService dfstestsService) {
@@ -75,355 +82,359 @@ public class WebtestController {
 	}
 
 	@Autowired
+	public void setAssessmentsService(AssessmentsService assessmentsService) {
+		this.assessmentsService = assessmentsService;
+	}
+
+	@Autowired
+	public void setAssessmentDetailsService(AssessmentDetailsService assessmentDetailsService) {
+		this.assessmentDetailsService = assessmentDetailsService;
+	}
+
+	@Autowired
 	public void setOffersService(OffersService offersService) {
 		this.offersService = offersService;
 	}
-	@Autowired
-	public void setUsersService(UsersService usersService) {
-		this.usersService = usersService;
-	}
+
+
 	@Autowired
 	public void setAttributesService(AttributesService attributesService) {
 		this.attributesService = attributesService;
 	}
+
 	@Autowired
 	public void setKPACategoryService(KPACategoryService kpaCategoryService) {
 		this.kpaCategoryService = kpaCategoryService;
 	}
+
 	@Autowired
 	public void setIndicatorsService(IndicatorsService indicatorsService) {
 		this.indicatorsService = indicatorsService;
 	}
-	@RequestMapping("/proceedDfSTest")
-	public String proceedTestResults(Model model, @Valid @ModelAttribute("dfstestform") DfstestForm dfstestForm, BindingResult result, Principal principal)
-	{
-		List<Dfstest> dfstests = dfstestForm.getDfstests();
-		String username=principal.getName();
 	
+	@RequestMapping(value = "/delete/assessment/{savedTitle}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public Assessment deleteAssessment(@PathVariable String savedTitle, Principal principal) {
+		System.out.println("WORKSSSSSSAssessmentDelete");
+		String username = principal.getName();
+		Assessment a=assessmentsService.getAssessment(username, savedTitle);
+		assessmentsService.delete(username,savedTitle);
+		return a;
+	}
 
-		if (result.hasErrors())
-		{
-			HashMap <Attribute, List<Indicator>> hm = new HashMap<Attribute, List<Indicator>>();
-			List<Attribute> attrs=attributesService.getAllAttributes();
+	
+	@RequestMapping("/updateDfSAssessment/{savedTitle}")
+	public String updateDfSAssessment(@PathVariable String savedTitle, Model model, @Valid @ModelAttribute("dfsassessform") AssessmentForm dfstestForm,
+			BindingResult result, Principal principal) {
+		List<AssessmentDetails> dfstests = dfstestForm.getAssessmentDetails();
+		String username = principal.getName();
+		
+		if (result.hasErrors()) {
+			HashMap<Attribute, List<Indicator>> hm = new HashMap<Attribute, List<Indicator>>();
+			List<Attribute> attrs = attributesService.getAllAttributes();
 
-			for (Attribute attr :attrs){
-				int idattr=attr.getId();
-				List<Indicator> ind_list=indicatorsService.getIndicators(idattr);
+			for (Attribute attr : attrs) {
+				int idattr = attr.getId();
+				List<Indicator> ind_list = indicatorsService.getIndicators(idattr);
 				hm.put(attr, ind_list);
 			}
 
+			model.addAttribute("dfsassessform", dfstestForm);
+			model.addAttribute("dfsmap", hm);
+			model.addAttribute("formError", "error");
+			System.out.println("ERRORS");
+			for (Object object : result.getAllErrors()) {
+				if (object instanceof FieldError) {
+					FieldError fieldError = (FieldError) object;
+
+					System.out.println(fieldError.getCode());
+					System.out.println(fieldError.getField());
+				}
+			}
+
+			return "newassessment";
+		}
+			
+			Assessment a= assessmentsService.getAssessment(username, savedTitle);
+			AssessmentId asId=a.getId();
+			asId.setTitle(dfstestForm.getTitle());
+			asId.setUsername(username);
+			a.setId(asId);
+		//	assessmentsService.delete(username,savedTitle);
+			assessmentsService.saveOrUpdate(a);
+			
+		
+		for (AssessmentDetails dfs : dfstests) {
+			
+			dfs.getAssessment().setId(new AssessmentId(username, dfstestForm.getTitle()));
+			assessmentDetailsService.saveOrUpdate(dfs);
+		}
+		if (!savedTitle.equals(dfstestForm.getTitle()))
+		assessmentsService.delete(username,savedTitle);
+		return "dfstestcompleted";
+	}
+	
+	@RequestMapping("/createDfSAssessment")
+	public String createDfSAssessment(Model model, @Valid @ModelAttribute("dfsassessform") AssessmentForm dfstestForm,
+			BindingResult result, Principal principal) {
+		List<AssessmentDetails> dfstests = dfstestForm.getAssessmentDetails();
+		String username = principal.getName();
+		if (assessmentsService.hasAssessment(username, dfstestForm.getTitle())){
+			result.rejectValue("title", "DuplicateKey.assessment.id.name");
+			
+		}
+
+		if (result.hasErrors()) {
+			HashMap<Attribute, List<Indicator>> hm = new HashMap<Attribute, List<Indicator>>();
+			List<Attribute> attrs = attributesService.getAllAttributes();
+
+			for (Attribute attr : attrs) {
+				int idattr = attr.getId();
+				List<Indicator> ind_list = indicatorsService.getIndicators(idattr);
+				hm.put(attr, ind_list);
+			}
+
+			model.addAttribute("dfsassessform", dfstestForm);
+			model.addAttribute("dfsmap", hm);
+			model.addAttribute("formError", "error");
+			System.out.println("ERRORS");
+			for (Object object : result.getAllErrors()) {
+				if (object instanceof FieldError) {
+					FieldError fieldError = (FieldError) object;
+
+					System.out.println(fieldError.getCode());
+					System.out.println(fieldError.getField());
+				}
+			}
+
+			return "newassessment";
+		}
+			AssessmentId asId=new AssessmentId(username,dfstestForm.getTitle());
+			Assessment a= new Assessment();
+			a.setId(asId);
+			assessmentsService.create(a);
+			
+		
+		for (AssessmentDetails dfs : dfstests) {
+			
+			dfs.getAssessment().setId(asId);
+			assessmentDetailsService.saveOrUpdate(dfs);
+		}
+		return "dfstestcompleted";
+	}
+
+	@RequestMapping("/dfsassessments")
+	public String getDfsAssessments(Model model, Principal principal) {
+		String username = principal.getName();
+		if (assessmentsService.hasAssessment(username)){
+			model.addAttribute("assessment", "assessment");
+			model.addAttribute("dfsassessments", assessmentsService.getAssessments(username));
+			
+		}
+		return "dfsassessments";
+	}
+	
+	@RequestMapping("/dfsassessments/update/{title}")
+	public String updateDfstest(@PathVariable String title, Model model, Principal principal) {
+		HashMap<Attribute, List<Indicator>> hm = new HashMap<Attribute, List<Indicator>>();
+		List<Attribute> attrs = attributesService.getAllAttributes();
+		String username = principal.getName();
+		List<AssessmentDetails> dfstests = assessmentDetailsService.getAssessmentDetails(username, title);
+
+		
+		AssessmentForm dfstestForm = new AssessmentForm();
+		dfstestForm.setTitle(title);
+		for (Attribute attr : attrs) {
+			int idattr = attr.getId();
+			List<Indicator> ind_list = indicatorsService.getIndicators(idattr);
+			hm.put(attr, ind_list);
+		}
+
+		
+		if (dfstests == null) {
+			dfstests = new ArrayList<AssessmentDetails>();
+			for (int i = 0; i < attributesService.getAllAttributes().size(); i++) {
+				dfstests.add(new AssessmentDetails());
+			}
+		}
+
+		dfstestForm.setAssessmentDetails(dfstests);
+
+		model.addAttribute("dfsassessform", dfstestForm);
+		model.addAttribute("dfsmap", hm);
+		model.addAttribute("savedTitle", title);
+		
+		return "updateassessment";
+	}
+
+	
+	@RequestMapping("/newassessment")
+	public String newDfstest(Model model, Principal principal) {
+		HashMap<Attribute, List<Indicator>> hm = new HashMap<Attribute, List<Indicator>>();
+		List<Attribute> attrs = attributesService.getAllAttributes();
+		List<AssessmentDetails> dfstests = null;
+		
+		AssessmentForm dfstestForm = new AssessmentForm();
+		for (Attribute attr : attrs) {
+			int idattr = attr.getId();
+			List<Indicator> ind_list = indicatorsService.getIndicators(idattr);
+			hm.put(attr, ind_list);
+		}
+
+		
+		if (dfstests == null) {
+			dfstests = new ArrayList<AssessmentDetails>();
+			for (int i = 0; i < attributesService.getAllAttributes().size(); i++) {
+				dfstests.add(new AssessmentDetails());
+			}
+		}
+
+		dfstestForm.setAssessmentDetails(dfstests);
+
+		model.addAttribute("dfsassessform", dfstestForm);
+		model.addAttribute("dfsmap", hm);
+		return "newassessment";
+	}
+
+	@RequestMapping("/doadjustattributesweights")
+	public String saveAdjustedWeights(Model model, @Valid @ModelAttribute("attributeForm") AttributeForm attributeForm,
+			BindingResult result, Principal principal) {
+		List<Attribute> attrs = attributeForm.getAttributes();
+		List<KPACategory> cat_list = kpaCategoryService.getKPACategory();
+		model.addAttribute("attributeForm", attributeForm);
+		model.addAttribute("cat_list", cat_list);
+		if (result.hasErrors()) {
+			System.out.println("AAAAAEEEEAAA");
+			for (Object object : result.getAllErrors()) {
+				if (object instanceof FieldError) {
+					FieldError fieldError = (FieldError) object;
+
+					System.out.println(fieldError.getCode());
+					System.out.println(fieldError.getField());
+				}
+			}
+			return "adjustattributeweights";
+		}
+		for (Attribute attr : attrs) {
+
+			attributesService.updateAttribute(attr);
+		}
+		model.addAttribute("adjusted", "adjusted");
+		return "adjustattributeweights";
+	}
+
+	@RequestMapping("/adjustattributeweights")
+	public String adjustWeights(Model model, Principal principal) {
+		List<Attribute> attrs = attributesService.getAllAttributes();
+		List<KPACategory> cat_list = kpaCategoryService.getKPACategory();
+		model.addAttribute("cat_list", cat_list);
+		AttributeForm attrFrm = new AttributeForm();
+		attrFrm.setAttributes(attrs);
+		model.addAttribute("attributeForm", attrFrm);
+		return "adjustattributeweights";
+
+	}
+
+	@RequestMapping("/proceedDfSTest")
+	public String proceedTestResults(Model model, @Valid @ModelAttribute("dfstestform") DfstestForm dfstestForm,
+			BindingResult result, Principal principal) {
+		List<Dfstest> dfstests = dfstestForm.getDfstests();
+		String username = principal.getName();
+
+		if (result.hasErrors()) {
+			HashMap<Attribute, List<Indicator>> hm = new HashMap<Attribute, List<Indicator>>();
+			List<Attribute> attrs = attributesService.getAllAttributes();
+
+			for (Attribute attr : attrs) {
+				int idattr = attr.getId();
+				List<Indicator> ind_list = indicatorsService.getIndicators(idattr);
+				hm.put(attr, ind_list);
+			}
 
 			model.addAttribute("dfstestform", dfstestForm);
 			model.addAttribute("dfsmap", hm);
 			model.addAttribute("formError", "error");
 			System.out.println("ERRORS");
 			for (Object object : result.getAllErrors()) {
-				if(object instanceof FieldError) {
+				if (object instanceof FieldError) {
 					FieldError fieldError = (FieldError) object;
 
 					System.out.println(fieldError.getCode());
 					System.out.println(fieldError.getField());
 				}
 			}
-			
+
 			return "showdfstest";
 		}
-		for (Dfstest dfs: dfstests){
+		for (Dfstest dfs : dfstests) {
 			dfs.getUser().setUsername(username);
 			dfstestsService.saveOrUpdate(dfs);
 		}
 		return "dfstestcompleted";
 	}
+
 	@RequestMapping("/dfstest")
-	public String createDfstest(Model model, Principal principal){
-		HashMap <Attribute, List<Indicator>> hm = new HashMap<Attribute, List<Indicator>>();
-		List<Attribute> attrs=attributesService.getAllAttributes();
-		List<Dfstest> dfstests=null;
-		String username="";
-		DfstestForm dfstestForm=new DfstestForm();
-		for (Attribute attr :attrs){
-			int idattr=attr.getId();
-			List<Indicator> ind_list=indicatorsService.getIndicators(idattr);
+	public String createDfstest(Model model, Principal principal) {
+		HashMap<Attribute, List<Indicator>> hm = new HashMap<Attribute, List<Indicator>>();
+		List<Attribute> attrs = attributesService.getAllAttributes();
+		List<Dfstest> dfstests = null;
+		String username = "";
+		DfstestForm dfstestForm = new DfstestForm();
+		for (Attribute attr : attrs) {
+			int idattr = attr.getId();
+			List<Indicator> ind_list = indicatorsService.getIndicators(idattr);
 			hm.put(attr, ind_list);
 		}
 
-		if (principal!=null){
-			username=principal.getName();
-			dfstests =dfstestsService.getDfstests(username);
+		if (principal != null) {
+			username = principal.getName();
+			dfstests = dfstestsService.getDfstests(username);
 		}
-		if (dfstests==null){
-			dfstests= new ArrayList<Dfstest>();
-			for(int i=0; i<attributesService.getAllAttributes().size(); i++){
+		if (dfstests == null) {
+			dfstests = new ArrayList<Dfstest>();
+			for (int i = 0; i < attributesService.getAllAttributes().size(); i++) {
 				dfstests.add(new Dfstest());
 			}
 		}
 
 		dfstestForm.setDfstests(dfstests);
-		
+
 		model.addAttribute("dfstestform", dfstestForm);
 		model.addAttribute("dfsmap", hm);
 		return "showdfstest";
 	}
 
-	@RequestMapping("/createoffer")
-	public String createoffer(Model model, Principal principal){
-		Offer offer=null;
-		if (principal!=null){
-			String username=principal.getName();
-			offer =offersService.getOffer(username);
+	/*@RequestMapping("/createoffer")
+	public String createoffer(Model model, Principal principal) {
+		Offer offer = null;
+		if (principal != null) {
+			String username = principal.getName();
+			offer = offersService.getOffer(username);
 		}
-		if (offer==null)
-			offer=new Offer();
+		if (offer == null)
+			offer = new Offer();
 		model.addAttribute("offer", offer);
 		return "createoffer";
 	}
-	@RequestMapping("/updateuser")
-	public String updateuser(Model model, Principal principal){
-		User user=null;
-		if (principal!=null){
-			String username=principal.getName();
-			System.out.println("USERNAME  "+username);
-			//User u=(User)principal;
-			user =usersService.getUser(username);
-		}
-		if (user==null)
-			user=new User();
-		model.addAttribute("user", user);
-		return "updateuser";
-	}
 
-	@RequestMapping(value="/docreate", method=RequestMethod.POST)
-	public String doCreate(Model model, @Validated(FormValidationGroup.class) Offer offer, BindingResult result, Principal principal, @RequestParam(value="delete", required=false) String delete){
+	@RequestMapping(value = "/docreate", method = RequestMethod.POST)
+	public String doCreate(Model model, @Validated(FormValidationGroup.class) Offer offer, BindingResult result,
+			Principal principal, @RequestParam(value = "delete", required = false) String delete) {
 
-		if (result.hasErrors())
-		{
+		if (result.hasErrors()) {
 
 			return "createoffer";
 		}
-		if (delete==null){
-			String username=principal.getName();
+		if (delete == null) {
+			String username = principal.getName();
 			offer.getUser().setUsername(username);
 			offersService.saveOrUpdate(offer);
 			return "offercreated";
-		}
-		else{
+		} else {
 			offersService.delete(offer.getId());
 			return "offerdeleted";
 		}
 
-	}
-	@RequestMapping(value="/attributes/{attr_id}/docreateindicator", method=RequestMethod.POST)
-	public String doCreateIndicator(Model model,@PathVariable int attr_id, @ModelAttribute("indicatorForm") IndicatorForm indicatorForm, BindingResult result, Principal principal, @RequestParam(value="delete", required=false) String delete){
-		System.out.println("Attr_ID"+attr_id);
-		List<Indicator> indicators = indicatorForm.getIndicators();
-
-		if (result.hasErrors())
-		{
-
-			return "addindicator";
-		}
-		if (delete==null){
-			System.out.println("INDICATOR");
-			Attribute attr=attributesService.getAttribute(attr_id);
-			if(null != indicators && indicators.size() > 0) {
-				for (Indicator ind : indicators) {
-					System.out.println("INDICATOR"+ind.getText());
-					Indicator indic=indicatorsService.getIndicator(ind.getId());
-					if (indic!=null)
-						model.addAttribute("updateFlag", "updated");
-					else
-						model.addAttribute("updateFlag", "created");
-					ind.getAttribute().setId(attr_id);
-					indicatorsService.saveOrUpdate(ind);
-
-				}
-			}
-
-
-			model.addAttribute("attribute", attr);
-			//offer.getUser().setUsername(username);
-			//offersService.saveOrUpdate(offer);
-			return "indicatorcreated";
-		}
-		else{
-
-			//	indicatorsService.delete(indicator.getId());
-			//offersService.delete(offer.getId());
-			return "indicatordeleted";
-		}
-
-	}
-	@RequestMapping(value="/attributes/{attr_id}/editattribute/{id}", method=RequestMethod.GET)
-	public String editIndicator(@PathVariable("attr_id") String attr_id, @PathVariable("id") String id, Model model){
-		Indicator ind=null;
-
-		Attribute attr=attributesService.getAttribute(Integer.valueOf(attr_id).intValue());	
-		System.out.println("ATTR_ID"+ attr.getId());
-		ind=indicatorsService.getIndicator(Integer.valueOf(id).intValue());
-		model.addAttribute("indicator", ind);		
-		model.addAttribute("attribute", attr);
-		return "addindicator";
-	}
-	@RequestMapping("/attributes")
-	public String createAttribute(Model model, Principal principal){
-		Attribute attribute=null;
-		List<KPACategory> cat_list=kpaCategoryService.getKPACategory();
-		System.out.println("AAAAAAAAAAAAAA");
-		if (attribute==null)
-			attribute=new Attribute();
-		List<Attribute> attributes=attributesService.getAllAttributes();
-		model.addAttribute("attributes", attributes);
-		model.addAttribute("attribute", attribute);
-		model.addAttribute("attributecreated", null);
-		model.addAttribute("cat_list", cat_list);
-
-		return "createattribute";
-	}
-	@RequestMapping(value="/docreateattribute", method=RequestMethod.POST)
-	public String doCreateIndicator(Model model, @Valid Attribute attribute, BindingResult result, Principal principal, @RequestParam(value="delete", required=false) String delete){
-		List<Attribute> attributes=attributesService.getAllAttributes();
-		List<KPACategory> cat_list=kpaCategoryService.getKPACategory();
-
-		if (attributesService.getAttribute(attribute.getName())!=null)
-		{
-
-			model.addAttribute("attribute", attribute);
-			model.addAttribute("attributes", attributes);
-			model.addAttribute("cat_list", cat_list);
-			result.rejectValue("name", "DuplicateKey.attribute.name");
-			return "createattribute";
-		}
-		if (result.hasErrors())
-		{
-			System.out.println("ERROR"+result.getFieldError());
-			model.addAttribute("attributes", attributes);
-			model.addAttribute("cat_list", cat_list);
-			return "createattribute";
-		}
-
-		attributesService.saveOrUpdate(attribute);
-		attributes=attributesService.getAllAttributes();
-		model.addAttribute("attributes", attributes);
-		model.addAttribute("attribute", new Attribute());
-		model.addAttribute("attributecreated", "Attribute Successfully Created");
-		model.addAttribute("cat_list", cat_list);
-		return "createattribute";	
-
-
-	}
-	@RequestMapping(value="/attributes/{id}/viewindicators", method=RequestMethod.GET)
-	public String viewIndicator(@PathVariable int id, Model model){
-		Attribute attr=attributesService.getAttribute(id);
-		int idattr=attr.getId();
-		List<Indicator> ind_list=indicatorsService.getIndicators(idattr);
-
-		model.addAttribute("attribute", attr);
-		model.addAttribute("indicators", ind_list);
-
-		return "viewindicators";
-	}
-	@RequestMapping(value="/attributes/{id}/addindicator", method=RequestMethod.GET)
-	public String addIndicator(@PathVariable int id, 
-			Model model) {
-		System.out.println("zzzzzzz");
-		Attribute attr=attributesService.getAttribute(id);	
-		IndicatorForm ind_form =new IndicatorForm();
-
-		int idattr=attr.getId();
-		List<Indicator> ind_list=indicatorsService.getIndicators(idattr);
-		System.out.println("yyyyyy");
-		if (null!=ind_list){
-			System.out.println("iffff");
-			ind_form.setIndicators(ind_list);
-		}
-		else{	
-			System.out.println("else");
-			ind_form.setIndicators(indicators);}
-
-
-		model.addAttribute("indicatorForm", ind_form);		
-		model.addAttribute("attribute", attr);
-		return "addindicator";
-
-
-
-
-	}
-
-	@RequestMapping(value="/attributes/editattribute/{id}", method=RequestMethod.GET)
-
-	public String editAttribute(@PathVariable int id, 
-			Model model) {
-		System.out.println("WORKSSSSSS");
-		Attribute attr=attributesService.getAttribute(id);
-		List<KPACategory> cat_list=kpaCategoryService.getKPACategory();
-		List<KPACategory>kpa=attr.getKpaCategories();
-
-
-
-		model.addAttribute("attribute", attr);
-		model.addAttribute("cat_list", cat_list);
-		//	attribute.setId(id);
-		//	attributesService.saveOrUpdate(attribute);
-		return "editattribute";
-	}
-	@RequestMapping(value="/attributes/editattribute", method=RequestMethod.POST)
-	public String doeditattribute(@Valid Attribute attr, BindingResult result, Model model){
-		if (result.hasErrors()) {
-			return "editattribute";
-		}
-		attributesService.updateAttribute(attr);
-		model.addAttribute("success", "Attribute " + attr.getName() +  " updated successfully");
-		return "attributeupdatesuccess";
-
-
-	}
-
-	@RequestMapping(value="/attributes/delete/{id}", method=RequestMethod.DELETE, 
-			produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	public Attribute deleteAttribute(@PathVariable int id) {
-		System.out.println("WORKSSSSSS");
-		Attribute attr=attributesService.getAttribute(id);
-		attributesService.delete(id);
-		return attr;
-	}
-	@RequestMapping(value="/indicators/delete/{id}", method=RequestMethod.DELETE, 
-			produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	public Indicator deleteIndicator(@PathVariable int id) {
-		System.out.println("WORKSSSSSS");
-		Indicator ind=indicatorsService.getIndicator(id);
-		indicatorsService.delete(id);
-		return ind;
-	}
-
-	@RequestMapping(value="/doupdateuser", method=RequestMethod.POST)
-	public String doUpdateUser(Model model, @Validated(FormValidationGroup.class) User user, BindingResult result, Principal principal){
-
-		if (result.hasErrors())
-		{
-			for (Object object : result.getAllErrors()) {
-				if(object instanceof FieldError) {
-					FieldError fieldError = (FieldError) object;
-
-					System.out.println(fieldError.getCode());
-					System.out.println(fieldError.getField());
-					if (!fieldError.getField().equals("password"))
-						return "updateuser";
-				}
-
-
-			}
-
-
-		}
-
-
-		usersService.saveOrUpdate(user);
-		return "userupdated";
-
-	}
-
+	}*/
 
 }

@@ -14,7 +14,7 @@
 			<td><sf:input path="name" name="name" type="text" /><br />
 			<div class="error"><sf:errors path="name"></sf:errors></div></td>
 			<td>
-			<sf:select path="kpaCategories" name="kpaCategories" items="${cat_list}" multiple="true" itemValue="id" itemLabel="category"/>
+			<sf:select path="kpaCategories" name="kpaCategories" items="${cat_list}" multiple="false" itemValue="id" itemLabel="category"/>
     			
 			</td>
 		</tr>

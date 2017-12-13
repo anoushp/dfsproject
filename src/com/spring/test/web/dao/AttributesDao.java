@@ -1,5 +1,6 @@
 package com.spring.test.web.dao;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -29,7 +30,14 @@ public class AttributesDao {
 	}
 	@SuppressWarnings("unchecked")
 	public List<Attribute> getAllAttributes() {
-		return session().createQuery("from Attribute").list();
+		List<Attribute> attrs =session().createQuery("from Attribute").list();
+		for (Attribute attr:attrs){
+			if (attr!=null){
+				Hibernate.initialize(attr.getKpaCategories());
+			}
+		}
+		Collections.sort(attrs, new AttributeSortByCategoryComparator());
+		return attrs;
 		
 	}
 	public Attribute getAttribute(int id) {
@@ -57,6 +65,12 @@ public class AttributesDao {
 	
 	}
 	public boolean delete(int id) {
+		Criteria crit=session().createCriteria(Attribute.class);
+		crit.add(Restrictions.idEq(id));
+		Attribute attr=(Attribute)crit.uniqueResult();
+		if (attr!=null){
+			Hibernate.initialize(attr.getIndicators());
+		}
 		Query query=session().createQuery("delete from Attribute where id=:id");
 		query.setLong("id",id);
 		return (query.executeUpdate()==1);

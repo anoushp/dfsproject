@@ -45,7 +45,8 @@ public class IndicatorsDao {
 		Criteria crit=session().createCriteria(Indicator.class);
 		crit.createAlias("attribute", "a");
 		crit.add(Restrictions.eq("a.id", id));
-		return crit.list();
+		
+		return crit.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
 
 	}
 	public void saveOrUpdate(Indicator ind) {

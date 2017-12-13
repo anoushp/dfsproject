@@ -3,6 +3,7 @@ package com.spring.test.web.dao;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -40,4 +41,10 @@ public class DfstestsDao {
 	public void saveOrUpdate(Dfstest dfstest) {
 		session().saveOrUpdate(dfstest);
 	}
+  public boolean delete(int id) {
+		
+		Query query=session().createQuery("delete from Dfstest where id=:id");
+		query.setLong("id",id);
+		return (query.executeUpdate()==1);
+  }
 }

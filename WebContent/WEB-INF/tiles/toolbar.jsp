@@ -18,10 +18,16 @@
 	<a href="${pageContext.request.contextPath}/attributes">View Attributes List</a>
 </sec:authorize>
 <sec:authorize access="isAuthenticated()">
+	<a href="${pageContext.request.contextPath}/adjustattributeweights">Adjust attribute weights</a>
+</sec:authorize>
+<sec:authorize access="isAuthenticated()">
 	<a href="${pageContext.request.contextPath}/updateuser">Update your account details</a>
 </sec:authorize>
 <sec:authorize access="isAuthenticated()">
 	<a href="${pageContext.request.contextPath}/dfstest">Start Dfs Test</a>
+</sec:authorize>
+<sec:authorize access="isAuthenticated()">
+	<a href="${pageContext.request.contextPath}/dfsassessments">Assessments</a>
 </sec:authorize>
 <%-- <sec:authorize access="!isAuthenticated()">
 <p><a href="<c:url value='/login'/>">Log In</a></p>
@@ -35,8 +41,8 @@
 </sec:authorize>
 &nbsp;
 
-<sec:authorize access="isAuthenticated()">
+<%-- <sec:authorize access="isAuthenticated()">
 	<a href="<c:url value='/messages'/>">Messages(<span
 		id=numberMessages>0</span>)
 	</a>
-</sec:authorize>
+</sec:authorize> --%>

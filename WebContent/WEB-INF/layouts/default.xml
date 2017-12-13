@@ -52,6 +52,22 @@
 <put-attribute name="title" value="Create Attribute"></put-attribute>
 <put-attribute name="content" value="/WEB-INF/tiles/createattribute.jsp"></put-attribute>
 </definition>
+<definition name="adjustattributeweights" extends="offers.base">
+<put-attribute name="title" value="Adjust Attributes Weights"></put-attribute>
+<put-attribute name="content" value="/WEB-INF/tiles/adjustattributeweights.jsp"></put-attribute>
+</definition>
+<definition name="dfsassessments" extends="offers.base">
+<put-attribute name="title" value="View Assessments"></put-attribute>
+<put-attribute name="content" value="/WEB-INF/tiles/dfsassessments.jsp"></put-attribute>
+</definition>
+<definition name="newassessment" extends="offers.base">
+<put-attribute name="title" value="Create a new assessment"></put-attribute>
+<put-attribute name="content" value="/WEB-INF/tiles/newassessment.jsp"></put-attribute>
+</definition>
+<definition name="updateassessment" extends="offers.base">
+<put-attribute name="title" value="Update existing assessment"></put-attribute>
+<put-attribute name="content" value="/WEB-INF/tiles/updateassessment.jsp"></put-attribute>
+</definition>
 <definition name="addindicator" extends="offers.base">
 <put-attribute name="title" value="Add/Edit Indicator"></put-attribute>
 <put-attribute name="content" value="/WEB-INF/tiles/addindicator.jsp"></put-attribute>

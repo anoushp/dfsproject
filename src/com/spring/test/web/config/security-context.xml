@@ -23,6 +23,12 @@
 	    <!-- <security:intercept-url pattern="/admin" access="hasRole('ROLE_ADMIN')" />-->
 		<security:intercept-url pattern="/createoffer" access="isAuthenticated()" />
 		<security:intercept-url pattern="/dfstest" access="isAuthenticated()" />
+		<security:intercept-url pattern="/dfsassessments" access="isAuthenticated()" />
+		<security:intercept-url pattern="/delete/assessment/**" access="isAuthenticated()" />
+		<security:intercept-url pattern="/dfsassessments/update/**" access="isAuthenticated()" />
+		<security:intercept-url pattern="/createDfSAssessment" access="isAuthenticated()" />
+		<security:intercept-url pattern="/updateDfSAssessment/**" access="isAuthenticated()" />
+		<security:intercept-url pattern="/newassessment" access="isAuthenticated()" />
 		<security:intercept-url pattern="/proceedDfSTest" access="isAuthenticated()" />
 		<security:intercept-url pattern="/attributes/**" access="isAuthenticated()" />
 		<security:intercept-url pattern="/attributes/delete/**" access="isAuthenticated()" />
@@ -34,6 +40,8 @@
 		<security:intercept-url pattern="/docreateattribute" access="isAuthenticated()" />
 		
 		<security:intercept-url pattern="/updateuser" access="isAuthenticated()" />
+		<security:intercept-url pattern="/adjustattributeweights" access="isAuthenticated()" />
+		<security:intercept-url pattern="/doadjustattributesweights" access="isAuthenticated()" />
 		<security:intercept-url pattern="/messages" access="isAuthenticated()" />
 		<security:intercept-url pattern="/sendmessage" access="isAuthenticated()" />
 		<security:intercept-url pattern="/docreate" access="isAuthenticated()" />
