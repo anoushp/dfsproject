@@ -43,8 +43,16 @@ public class UsersService {
 	public void sendMessage(Message message) {
 		messagesDao.saveOrUpdate(message);
 	}
+	
+	public void updatePassword(String password, String username){
+		usersDao.updatePassword(password, username);
+	}
 	public User getUser(String username){
 		return usersDao.getUser(username);
+		
+	}
+	public User findByEmail(String email){
+		return usersDao.findByEmail(email);
 		
 	}
 

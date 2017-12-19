@@ -68,6 +68,14 @@
 <put-attribute name="title" value="Update existing assessment"></put-attribute>
 <put-attribute name="content" value="/WEB-INF/tiles/updateassessment.jsp"></put-attribute>
 </definition>
+<definition name="forgot-password" extends="offers.base">
+<put-attribute name="title" value="Forgot password"></put-attribute>
+<put-attribute name="content" value="/WEB-INF/tiles/forgot-password.jsp"></put-attribute>
+</definition>
+<definition name="reset-password" extends="offers.base">
+<put-attribute name="title" value="Reset password"></put-attribute>
+<put-attribute name="content" value="/WEB-INF/tiles/reset-password.jsp"></put-attribute>
+</definition>
 <definition name="addindicator" extends="offers.base">
 <put-attribute name="title" value="Add/Edit Indicator"></put-attribute>
 <put-attribute name="content" value="/WEB-INF/tiles/addindicator.jsp"></put-attribute>

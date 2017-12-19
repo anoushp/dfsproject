@@ -1,8 +1,6 @@
 package com.spring.test.web.dao;
 
-import java.sql.ResultSet;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -73,11 +71,21 @@ public class UsersDao {
 		//return jdbc.query("select * from users", BeanPropertyRowMapper.newInstance(User.class));
 	}
 	
+
 public User getUser(String username){
 	
 	Criteria crit=session().createCriteria(User.class);
 	crit.add(Restrictions.eq("username", username));
 	//or crit.add(Restrictions.ideq(username));
+	
+	return (User)crit.uniqueResult();
+	
+}
+public User findByEmail(String email){
+	
+	Criteria crit=session().createCriteria(User.class);
+	crit.add(Restrictions.eq("email", email));
+	
 	
 	return (User)crit.uniqueResult();
 	
@@ -89,6 +97,16 @@ public void updateUser(User user) {
 
 	u.setName(user.getName());
 	u.setEmail(user.getEmail());
+	
+	session().update(u);
+}
+public void updatePassword(String password, String username) {
+	Query q = session().createQuery("from User where username = :username ");
+	q.setParameter("username", username);
+	User u = (User)q.list().get(0);
+
+	u.setPassword(passwordEncoder.encode(password));
+	
 	
 	session().update(u);
 }
