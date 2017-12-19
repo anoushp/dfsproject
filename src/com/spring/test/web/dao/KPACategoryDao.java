@@ -32,6 +32,15 @@ public class KPACategoryDao {
 			return (List<KPACategory>)crit.list();
 			
 		}
+	   @SuppressWarnings("unchecked")
+	 		public KPACategory getKPACategoryId(String category){
+	 		
+	 			Criteria crit=session().createCriteria(KPACategory.class);
+	 			crit.add(Restrictions.eq("category", category));
+	 			
+	 			return (KPACategory)crit.uniqueResult();
+	 			
+	 		}
 		
 		
 		public void saveOrUpdate(KPACategory kpa_category) {

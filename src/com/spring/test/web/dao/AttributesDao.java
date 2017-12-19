@@ -40,6 +40,7 @@ public class AttributesDao {
 		return attrs;
 		
 	}
+	
 	public Attribute getAttribute(int id) {
 		Criteria crit=session().createCriteria(Attribute.class);
 		crit.add(Restrictions.idEq(id));

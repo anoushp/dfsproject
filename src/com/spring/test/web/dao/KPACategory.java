@@ -23,7 +23,7 @@ public class KPACategory {
 	
 	@NotBlank
 	@Size(min=5, max=45)
-	private String category=CategoryType.PROCESS.getCategoryType();
+	private String category=CategoryType.SYSTEMS.getCategoryType();
 	
 	
 	@Override

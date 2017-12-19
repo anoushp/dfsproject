@@ -1,13 +1,12 @@
 package com.spring.test.web.dao;
 
 public enum CategoryType {
-   PROCESS ("Process"),
-   PEOPLE ("People"),
-   TECHNOLOGY ("Technology"),
-   SYSTEMS ("Systems"),
-   POLICY ("Policy"),
-   RESOURCES ("Resources");
-   
+	   COMPETENCE ("Competence"),
+	   STRATEGY ("Strategy"),
+	   INFRASTRUCTURE ("Infrastructure"),
+	   SYSTEMS ("Systems"),
+	   COLLABORATION ("Collaboration"),
+	   RESOURCES ("Resources");
      
     String categoryType;
 

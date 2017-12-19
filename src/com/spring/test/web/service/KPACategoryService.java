@@ -35,7 +35,9 @@ public class KPACategoryService {
 		if (kpas.size()==0) return null;
 		return kpas;
 	}
-
+public int getKPACategoryId(String category){
+	return kpaCategoryDao.getKPACategoryId(category).getId();
+}
 public KPACategory findById(int id) {
 	return kpaCategoryDao.findById(id);
 	

@@ -16,23 +16,26 @@
    <tr><td>Assessment Title: </td>
    <td><sf:input path="title" name="title" type="text"/><div class="error"><sf:errors path="title"></sf:errors></div></td></tr>
    </table>
-	<c:forEach var="dfstst" items="${dfsmap}" varStatus="loop1">
-		<sf:input type="hidden" name="assessmentDetails[${ loop1.index}].id"
-			path="assessmentDetails[${ loop1.index}].id" />
-		<sf:input type="hidden" name="assessmentDetails[${ loop1.index}].attribute"
-			path="assessmentDetails[${ loop1.index}].attribute.id"
+   <c:set var="counter" value="0" />
+   <c:forEach var="cat_dfstst" items="${dfsmap}" varStatus="loopmain">
+    <h4 class="ss-attr-desc">${cat_dfstst.key}</h4>
+	<c:forEach var="dfstst" items="${cat_dfstst.value}" varStatus="loop1">
+		<sf:input type="hidden" name="assessmentDetails[${ counter}].id"
+			path="assessmentDetails[${ counter}].id" />
+		<sf:input type="hidden" name="assessmentDetails[${ counter}].attribute"
+			path="assessmentDetails[${ counter}].attribute.id"
 			value="${dfstst.key.id}" />
 		
-		<h4 class="ss-attr-desc">Attribute ${loop1.index+1}:
+		<h4 class="ss-attr-desc">Attribute ${counter+1}:
 			${dfstst.key.name}</h4>
 		<div class="ss-form-entry">
 			<table>
 				<tbody>
 				
-				<spring:bind path="assessmentDetails[${ loop1.index}].matlevel">
+				<spring:bind path="assessmentDetails[${ counter}].matlevel">
                  
              <c:if test="${status.error}">
-            <tr><div class="errorblock"><sf:errors path="assessmentDetails[${ loop1.index}].matlevel"></sf:errors></div></tr>
+            <tr><div class="errorblock"><sf:errors path="assessmentDetails[${ counter}].matlevel"></sf:errors></div></tr>
              </c:if>
                 </spring:bind>
 				
@@ -41,7 +44,7 @@
 
 						<tr>
 							<td nowrap><sf:radiobutton
-									path="assessmentDetails[${ loop1.index}].matlevel"
+									path="assessmentDetails[${ counter}].matlevel"
 									value="${loop.index+1}" />&nbsp ${loop.index+1} &nbsp</td>
 									
 							<td><c:if test="${ind != null}">${ind.text}
@@ -54,6 +57,8 @@
 			</table>
 		</div>
 		<br />
+		<c:set var="counter" value="${counter+1 }"	/>	
+</c:forEach>
 </c:forEach>
 <input value="Update your self-assessment" type="submit" class="submitButton">
 </sf:form>

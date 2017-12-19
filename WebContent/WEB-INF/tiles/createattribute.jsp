@@ -56,9 +56,14 @@
 </c:if>
 <div id="attributeFromResponse"></div>
 <table class="formtable">
-<tr><td>Attribute Description</td></tr>
+<tr><td>Attribute Description</td><td>Category</td></tr>
 <c:forEach var="ind" items="${attributes}">
 <tr><td><c:out value="${ind.name}"></c:out></td>
+<td>
+	<c:forEach items="${ind.kpaCategories}" var="kpa" >
+	<c:out value="${kpa.category}"></c:out>
+	</c:forEach>
+</td>
 
 <td>
 	<a href="${pageContext.request.contextPath}/attributes/editattribute/${ind.id}">Edit</a><br/>
