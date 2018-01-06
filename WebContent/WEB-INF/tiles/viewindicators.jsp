@@ -2,6 +2,10 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <head>
 <meta name="_csrf" content="${_csrf.token}" />
 <!-- default header name is X-CSRF-TOKEN -->
@@ -50,17 +54,20 @@
 <br></br>
 List of indicators for attribute "${attribute.name}"
 <div id="indicatorFromResponse"></div>
-<table class="formtable">
-<tr><td>Maturity Level</td><td>Additional Notes</td></tr>
+<table class="table table-striped">
+<thead>
+    <tr>
+    <th scope="col">Maturity Level</th>
+    <th scope="col">Description</th>
+
+ </tr>
+</thead>
+
 <c:forEach var="ind" items="${indicators}">
 <tr><td><c:out value="${ind.matlevel}"></c:out></td>
 <td><c:out value="${ind.text}"></c:out></td>
 
-<td>
-	<a href="${pageContext.request.contextPath}/attributes/${attribute.id}/editattribute/${ind.id}">Edit</a><br/>
-	<a href="${pageContext.request.contextPath}/indicators/delete/${ind.id}.json">Delete</a><br/>
-	
-	</td>
+
 </tr>
 </c:forEach>
 </table>

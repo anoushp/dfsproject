@@ -8,7 +8,7 @@ function onLoad(){
 	$("#password").keyup(checkPasswordsMatch);
 	$("#confirmpass").keyup(checkPasswordsMatch);
 	
-	$("#details").submit(canSubmit);
+	$("#reg_details").submit(canSubmit);
 
 }
 function canSubmit(){

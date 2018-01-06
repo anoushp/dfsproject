@@ -7,6 +7,10 @@
 <!-- default header name is X-CSRF-TOKEN -->
 <meta name="_csrf_header" content="${_csrf.headerName}" />
 </head>
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript">
    
@@ -34,9 +38,9 @@
 			  		
 			  		rowToDelete.remove();
 			  		
-			  		respContent += "<span class='success'>Attribute was deleted: [";
+			  		respContent += "<div class='alert alert-success' role='alert' id='success_message'>Attribute was deleted: [";
 			  		respContent += attribute.id + " : ";
-			  		respContent += attribute.name + "]</span>";
+			  		respContent += attribute.name + "]</div>";
 			  		
 			  		$("#attributeFromResponse").html(respContent);   		
 			  	}
@@ -49,14 +53,25 @@
 </script>
 
 <c:if test="${attributecreated != null}">
-<div class="indicatormessage">${attributecreated}</div>
+ <div class="alert alert-success" role="alert" id="success_message">
+			<i class="glyphicon glyphicon-thumbs-up"></i>${attributecreated}
+ </div>
+
 </c:if>
 <c:if test="${error != null}">
 <div class="errorblock">Error: Please check you filled all the fields required!</div>
 </c:if>
 <div id="attributeFromResponse"></div>
-<table class="formtable">
-<tr><td>Attribute Description</td><td>Category</td></tr>
+<table class="table table-striped">
+<thead>
+    <tr>
+    <th scope="col">Attribute Description</th>
+    <th scope="col">Category</th>
+    <th scope="col">Action</th>
+    
+    </tr>
+</thead>
+
 <c:forEach var="ind" items="${attributes}">
 <tr><td><c:out value="${ind.name}"></c:out></td>
 <td>
@@ -68,19 +83,74 @@
 <td>
 	<a href="${pageContext.request.contextPath}/attributes/editattribute/${ind.id}">Edit</a><br/>
 	<a href="${pageContext.request.contextPath}/attributes/delete/${ind.id}.json">Delete</a><br/>
-	<a href="${pageContext.request.contextPath}/attributes/${ind.id}/addindicator">AddIndicator</a><br/>
-	<a href="${pageContext.request.contextPath}/attributes/${ind.id}/viewindicators">View Indicators</a><br/>
+	<a href="${pageContext.request.contextPath}/attributes/${ind.id}/addindicator">Add/Edit Indicator</a><br/>
+	
 	</td>
 </tr>
 </c:forEach>
 </table>
-
+<div class="container">
 <sf:form method="post"
 	action="${pageContext.request.contextPath}/docreateattribute"
-	commandName="attribute">
+	commandName="attribute" class="well form-horizontal" >
+	<fieldset>
+
+		<!-- Form Name -->
+		<legend>
+			
+				<h2>
+					<b>New Attribute</b>
+				</h2>
+			
+		</legend>
+		<br>
 	<sf:input type="hidden" name="id" path="id" />
 	<sf:input type="hidden" name="weight" path="weight" value="0.1" />
-	<table class="formtable">
+	<div class="form-group">
+			<label class="control-label">Description</label>
+			<div class="inputGroupContainer">
+				<div class="input-group">
+					<span class="input-group-addon"><i
+						class="glyphicon glyphicon-pencil"></i></span>
+					<sf:input path="name" name="name" placeholder="Attribute Name"
+						class="form-control" type="text" />
+					<div class="error">
+						<sf:errors path="name"></sf:errors>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	    
+		<div class="form-group">
+			<label class="control-label">Category</label>
+			<div class="selectContainer">
+				<div class="input-group">
+					<span class="input-group-addon"><i
+						class="glyphicon glyphicon-list"></i></span>
+					<sf:select path="kpaCategories" name="kpaCategories" items="${cat_list}" multiple="false" itemValue="id" itemLabel="category" class="form-control selectpicker"/>
+						
+				
+
+				</div>
+			</div>
+		</div>
+				<div class="form-group">
+			<label class="control-label"></label>
+			<div class="col-md-4">
+				<br>
+				&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+				<button type="submit" class="btn btn-lg btn-primary btn-block">
+					&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspAdd Attribute <span
+						class="glyphicon glyphicon-send"></span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+				</button>
+			</div>
+		</div>
+
+	</fieldset>
+	</sf:form>
+</div>
+<%-- 	<table class="formtable">
 		<tr>
 			<td>Description :</td>
 			<td><sf:input path="name" name="name" type="text" /><br />
@@ -97,4 +167,4 @@
 
 		
 	</table>
-</sf:form>
+</sf:form> --%>

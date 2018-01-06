@@ -51,6 +51,10 @@ public class UsersService {
 		return usersDao.getUser(username);
 		
 	}
+	public void deleteUser(String username){
+		 usersDao.delete(username);
+		
+	}
 	public User findByEmail(String email){
 		return usersDao.findByEmail(email);
 		

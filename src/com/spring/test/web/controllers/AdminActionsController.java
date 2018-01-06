@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 import javax.validation.Valid;
 
@@ -24,6 +25,7 @@ import com.spring.test.web.dao.Attribute;
 import com.spring.test.web.dao.Indicator;
 import com.spring.test.web.dao.IndicatorForm;
 import com.spring.test.web.dao.KPACategory;
+import com.spring.test.web.dao.User;
 import com.spring.test.web.service.AttributesService;
 import com.spring.test.web.service.IndicatorsService;
 import com.spring.test.web.service.KPACategoryService;
@@ -63,6 +65,37 @@ public class AdminActionsController {
 	@Autowired
 	public void setIndicatorsService(IndicatorsService indicatorsService) {
 		this.indicatorsService = indicatorsService;
+	}
+
+	@RequestMapping("/updateuser/{userid}")
+	public String updateuser(@PathVariable String userid, Model model, Principal principal) {
+		User user = null;
+		List<String> countryList=new ArrayList<String>();
+		String[] locales = Locale.getISOCountries();
+		for (String countryCode : locales) {
+
+			Locale obj = new Locale("", countryCode);
+            countryList.add(obj.getDisplayCountry());
+			
+		}
+		user = usersService.getUser(userid);
+
+		if (user == null)
+			user = new User();
+		model.addAttribute("user", user);
+		model.addAttribute("countries", countryList);
+		return "updateuser";
+	}
+	@RequestMapping(value = "/deleteuser/{userid}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public User deleteUser(@PathVariable String userid) {
+		System.out.println("WORKSSSSSS");
+		User usr = usersService.getUser(userid);
+		
+		usersService.deleteUser(userid);
+
+	    
+		return usr;
 	}
 
 	@RequestMapping(value = "/attributes/{attr_id}/docreateindicator", method = RequestMethod.POST)

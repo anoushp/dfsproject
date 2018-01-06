@@ -29,6 +29,7 @@
 	<property name="basename" value="com.spring.test.web.messages.messages"></property>
 	</bean>
 	<mvc:resources location="/resources/" mapping="/static/**"></mvc:resources>
+	
 	<bean id="tilesViewResolver"
 		class="org.springframework.web.servlet.view.tiles3.TilesViewResolver">
 	</bean>

@@ -11,13 +11,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
@@ -91,14 +85,14 @@ public User findByEmail(String email){
 	
 }
 public void updateUser(User user) {
-	Query q = session().createQuery("from User where username = :username ");
+/*	Query q = session().createQuery("from User where username = :username ");
 	q.setParameter("username", user.getUsername());
 	User u = (User)q.list().get(0);
 
 	u.setName(user.getName());
-	u.setEmail(user.getEmail());
+	u.setEmail(user.getEmail());*/
 	
-	session().update(u);
+	session().saveOrUpdate(user);
 }
 public void updatePassword(String password, String username) {
 	Query q = session().createQuery("from User where username = :username ");
@@ -109,6 +103,12 @@ public void updatePassword(String password, String username) {
 	
 	
 	session().update(u);
+}
+public boolean delete(String username) {
+	Query query=session().createQuery("delete from User where username = :username");
+	query.setParameter("username", username);
+	return (query.executeUpdate()==1);
+	
 }
 }
 

@@ -2,6 +2,10 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <script type="text/javascript">
 	function onDeleteClick(event) {
 
@@ -16,44 +20,56 @@
 	}
 	$(document).ready(onReady);
 </script>
-<b> Attribute : ${attribute.name}</b>
+<h2> Indicators for Attribute : ${attribute.name}</h2>
+<div class="container">
 <sf:form method="post"
 	action="${pageContext.request.contextPath}/attributes/${attribute.id}/docreateindicator"
-	commandName="indicatorForm">
-	
-	
-	<table class="formtable">
+	commandName="indicatorForm" class="well form-horizontal">
+	<fieldset>
 	<c:forEach items="${indicatorForm.indicators}" var="indicator" varStatus="status">
 	
 	<sf:input type="hidden" name="indicators[${status.index}].id" path="indicators[${status.index}].id" />
 	<sf:input type="hidden" name="indicators[${status.index}].attribute" path="indicators[${status.index}].attribute.id" value="${model.attribute.id}"/>
-		<tr>
-			<td>Maturity level :</td>
-			<td><sf:input path="indicators[${status.index}].matlevel" name="indicators[${status.index}].matlevel" value="${status.index+1}" type="text" /><br />
-				<sf:errors path="indicators[${status.index}].matlevel"></sf:errors></td>
-		</tr>
-		<tr>
-			<td>Text :</td>
-			<td><sf:textarea path="indicators[${status.index}].text" name="indicators[${status.index}].text" type="text" /><br />
-				<sf:errors path="indicators[${status.index}].text"></sf:errors></td>
-		</tr>
+	<div class="form-group">
+			<label class="control-label">Maturity Level</label>
+			<div class="inputGroupContainer">
+				<div class="input-group">
+					<sf:input path="indicators[${status.index}].matlevel" name="indicators[${status.index}].matlevel" value="${status.index+1}" 
+						class="form-control" type="text" readonly="true"/>
+					<div class="error">
+						<sf:errors path="indicators[${status.index}].matlevel"></sf:errors>
+					</div>
+
+				</div>
+			</div>
+		</div>
+			<div class="form-group">
+			<label class="control-label">Text</label>
+			<div class="inputGroupContainer">
+				<div class="input-group">
+					<sf:textarea path="indicators[${status.index}].text" name="indicators[${status.index}].text" 
+						class="form-control" type="text" />
+					<div class="error">
+						<sf:errors path="indicators[${status.index}].text"></sf:errors>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
 		</c:forEach>
-		<tr>
-			<td></td>
-			<td><input value="Save Indicator" type="submit" class="submitButton"></td>
-		</tr>
+				<div class="form-group">
+			<label class="control-label"></label>
+			<div class="col-md-4">
+				<br>
+				&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+				<button type="submit" class="btn btn-lg btn-primary btn-block">
+					&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspSave Indicators
+				</button>
+			</div>
+		</div>
 
-		<c:if test="${indicator.id != 0}">
+</fieldset>
 
-			<tr>
-				<td></td>
-				<td>&nbsp;</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><input class="delete control" name="delete" id="delete"
-					value="Delete Indicator" type="submit" class="submitButton"></td>
-			</tr>
-		</c:if> 
-	</table>
 </sf:form>
+</div>

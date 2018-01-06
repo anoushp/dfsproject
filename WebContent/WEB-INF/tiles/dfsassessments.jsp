@@ -6,6 +6,10 @@
 <meta name="_csrf_header" content="${_csrf.headerName}" />
 </head>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <script type="text/javascript">
    
     $(document).ready(function() {
@@ -49,10 +53,16 @@
 <div class="indicatormessage">You have no existing assessments. Please proceed and create a new one</div>
 </c:if>
 <c:if test="${assessment!=null}">
-List of existing assessments 
+<h2>Assessment management</h2>
 <div id="assessmentFromResponse"></div>
-<table class="formtable">
-<tr><td>Assessment Title</td></tr>
+<table class="table table-striped">
+<thead>
+    <tr>
+    <th scope="col">Assessment Title</th>
+    <th scope="col">Actions/<th>
+  </tr>
+</thead>
+
 <c:forEach var="assmt" items="${dfsassessments}">
 <tr><td><c:out value="${assmt.id.title}"></c:out></td>
 

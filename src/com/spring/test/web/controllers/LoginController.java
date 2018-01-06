@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -30,6 +31,7 @@ import com.spring.test.web.service.UsersService;
 public class LoginController {
 
 	private UsersService usersService;
+	
 
 	@Autowired
 	public void setUsersService(UsersService usersService) {
@@ -44,7 +46,16 @@ public class LoginController {
 
 	@RequestMapping("/newaccount")
 	public String showNewAccount(Model model) {
+		String[] locales = Locale.getISOCountries();
+		List<String> countryList=new ArrayList<String>();
+		for (String countryCode : locales) {
+
+			Locale obj = new Locale("", countryCode);
+            countryList.add(obj.getDisplayCountry());
+			
+		}
 		model.addAttribute("user", new User());
+		model.addAttribute("countries", countryList);
 		return "newaccount";
 
 	}
@@ -79,15 +90,25 @@ public class LoginController {
 	}
 
 	@RequestMapping(value = "/createaccount", method = RequestMethod.POST)
-	public String createAccount(@Validated(FormValidationGroup.class) User user, BindingResult result) {
+	public String createAccount(Model model, @Validated(FormValidationGroup.class) User user, BindingResult result) {
+		List<String> countryList=new ArrayList<String>();
+		String[] locales = Locale.getISOCountries();
+		for (String countryCode : locales) {
 
+			Locale obj = new Locale("", countryCode);
+            countryList.add(obj.getDisplayCountry());
+			
+		}
 		if (result.hasErrors()) {
+			System.out.println("ERROR" + result.getFieldError());
+			model.addAttribute("countries", countryList);
 			return "newaccount";
 		}
 		user.setAuthority("ROLE_USER");
 		user.setEnabled(true);
 		if (usersService.exists(user.getUsername())) {
 			result.rejectValue("username", "DuplicateKey.user.username");
+		    model.addAttribute("countries", countryList);
 			return "newaccount";
 		}
 		try {
@@ -95,6 +116,7 @@ public class LoginController {
 
 		} catch (DuplicateKeyException e) {
 			result.rejectValue("username", "DuplicateKey.user.username");
+			model.addAttribute("countries", countryList);
 			return "newaccount";
 
 		}
@@ -135,6 +157,15 @@ public class LoginController {
 
 	@RequestMapping("/updateuser")
 	public String updateuser(Model model, Principal principal) {
+		List<String> countryList=new ArrayList<String>();
+		String[] locales = Locale.getISOCountries();
+		for (String countryCode : locales) {
+
+			Locale obj = new Locale("", countryCode);
+            countryList.add(obj.getDisplayCountry());
+			
+		}
+
 		User user = null;
 		if (principal != null) {
 			String username = principal.getName();
@@ -145,12 +176,21 @@ public class LoginController {
 		if (user == null)
 			user = new User();
 		model.addAttribute("user", user);
+		model.addAttribute("countries", countryList);
 		return "updateuser";
 	}
 
 	@RequestMapping(value = "/doupdateuser", method = RequestMethod.POST)
 	public String doUpdateUser(Model model, @Validated(FormValidationGroup.class) User user, BindingResult result,
 			Principal principal) {
+		List<String> countryList=new ArrayList<String>();
+		String[] locales = Locale.getISOCountries();
+		for (String countryCode : locales) {
+
+			Locale obj = new Locale("", countryCode);
+            countryList.add(obj.getDisplayCountry());
+			
+		}
 
 		if (result.hasErrors()) {
 			for (Object object : result.getAllErrors()) {
@@ -160,7 +200,9 @@ public class LoginController {
 					System.out.println(fieldError.getCode());
 					System.out.println(fieldError.getField());
 					if (!fieldError.getField().equals("password"))
+					{   model.addAttribute("countries", countryList);
 						return "updateuser";
+					}
 				}
 
 			}
