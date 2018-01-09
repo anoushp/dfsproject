@@ -3,18 +3,46 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
+<!-- Latest compiled and minified CSS -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-full" style='background-color: #428bca'>
+    <!--   <a class="navbar-brand" href="#">Navbar</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>-->
 
-<%-- <c:choose>
-	<c:when test="${hasOffer}">
-		<a href="${pageContext.request.contextPath}/createoffer">Edit or
-			remove your current offer</a>
-	</c:when>
-	<c:otherwise>
-		<a href="${pageContext.request.contextPath}/createoffer">Add new
-			offer</a>
-	</c:otherwise>
-</c:choose> --%>
-<sec:authorize access="hasRole('ROLE_ADMIN')">
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="${pageContext.request.contextPath}/">Home <span class="sr-only">(current)</span></a>
+          </li>
+        
+           <sec:authorize access="isAuthenticated()">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="${pageContext.request.contextPath}/" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Your Account</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown01">
+              <a class="dropdown-item" href="${pageContext.request.contextPath}/updateuser">Update your account details</a>
+              <a class="dropdown-item" href="${pageContext.request.contextPath}/dfsassessments">Manage Your DfS Assessments</a>
+              <a class="dropdown-item" href="${pageContext.request.contextPath}/adjustattributeweights">Adjust Attribute Weights</a>
+             
+            </div>
+          </li>
+          </sec:authorize>
+          <sec:authorize access="hasRole('ROLE_ADMIN')">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="${pageContext.request.contextPath}/" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin area</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown01">
+              <a class="dropdown-item" href="${pageContext.request.contextPath}/attributes">Manage Attributes</a>
+              <a class="dropdown-item" href="<c:url value='/admin'/>">Manage Users</a>
+             
+            </div>
+          </li>
+          </sec:authorize>
+        </ul>
+        
+      </div>
+    </nav>
+
+<!--<sec:authorize access="hasRole('ROLE_ADMIN')">
 	<a href="${pageContext.request.contextPath}/attributes">View Attributes List</a>
 </sec:authorize>
 <sec:authorize access="isAuthenticated()">
@@ -38,7 +66,7 @@
 &nbsp;
 <sec:authorize access="hasRole('ROLE_ADMIN')">
 	<a href="<c:url value='/admin'/>">Admin</a>
-</sec:authorize>
+</sec:authorize>-->
 &nbsp;
 
 <%-- <sec:authorize access="isAuthenticated()">

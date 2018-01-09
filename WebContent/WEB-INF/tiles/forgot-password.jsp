@@ -3,25 +3,55 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
 
-
-<h3>Forgot Password?</h3>
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
+<h3>Forgot Password? Enter your email address and we will send you a link to reset your password</h3>
 <c:if test="${param.success != null }">
-<p>You've successfully requested a new password reset!</p>
+  <div class="alert alert-success" role="alert" id="success_message">
+			You've successfully requested a new password reset!
+   </div>
+
 </c:if>
-<sf:form method="post"
+<div class="container">
+<sf:form method="post" class="well form-horizontal"
 	action="${pageContext.request.contextPath}/forgot-password"
 	commandName="forgotPasswordForm">
-<table class="formtable">
-    <tr><td>Enter your email address and we will send you a link to reset your password.</td></tr> 
-	<tr><td>User Email:</td><td><input type='text' name="email" value="">
-	<div class="error"><sf:errors path="email"></sf:errors></div></td></tr>
-	
-	<tr><td colspan='2'><input name="submit" type="submit" value="Send Password Reset Email" class="submitButton"/></td></tr>
-</table>
+	<fieldset>
+		
+	<div class="form-group">
+			<label class="col-md-4 control-label">Email</label>
+			<div class="col-md-4 inputGroupContainer">
+				<div class="input-group">
+					<span class="input-group-addon"><i
+						class="glyphicon glyphicon-envelope"></i></span>
+					<input type='text' name="email" class="form-control" value="">
+					<div class="error">
+						<sf:errors path="email"></sf:errors>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-4 control-label"></label>
+			<div class="col-md-4">
+				<br>
+				&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+				<button type="submit" class="btn btn-lg btn-primary btn-block">
+					&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspSend Password Reset Email<span
+						class="glyphicon glyphicon-send"></span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+				</button>
+			</div>
+		</div>
+		</fieldset>
+		
+
 
 </sf:form>
 
-
+</div>
 
 
 

@@ -7,7 +7,7 @@
 <put-attribute name="header" value="/WEB-INF/tiles/header.jsp"></put-attribute>
 <put-attribute name="content" value="/WEB-INF/tiles/content.jsp"></put-attribute>
 <put-attribute name="footer" value="/WEB-INF/tiles/footer.jsp"></put-attribute>
-<put-attribute name="toolbar1" value=""></put-attribute>
+<put-attribute name="toolbar1" value="/WEB-INF/tiles/toolbar.jsp"></put-attribute>
 </definition>
 
 <definition name="home" extends="offers.base">
@@ -31,6 +31,7 @@
 <definition name="admin" extends="offers.base">
 <put-attribute name="title" value="Admin Page"></put-attribute>
 <put-attribute name="content" value="/WEB-INF/tiles/admin.jsp"></put-attribute>
+<put-attribute name="toolbar1" value="/WEB-INF/tiles/toolbar.jsp"></put-attribute>
 </definition>
 <definition name="accountcreated" extends="offers.base">
 <put-attribute name="title" value="Account created"></put-attribute>

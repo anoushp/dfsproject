@@ -12,7 +12,7 @@
 <c:if test="${param.resetSuccess != null }">
 <p>You have successfully updated your password</p>
 </c:if>
-<h3>Login with Username and Password</h3>
+
 <c:if test="${param.error != null }">
 <p>Login failed check your username and password</p>
 </c:if>
