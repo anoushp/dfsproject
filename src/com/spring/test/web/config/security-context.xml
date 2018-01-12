@@ -40,6 +40,9 @@
 		<security:intercept-url pattern="/docreateattribute" access="isAuthenticated()" />
 		
 		<security:intercept-url pattern="/updateuser" access="isAuthenticated()" />
+		<security:intercept-url pattern="/newcompany" access="isAuthenticated()" />
+		<security:intercept-url pattern="/docreatecompany" access="isAuthenticated()" />
+		<security:intercept-url pattern="/assessmentmanagement" access="hasRole('ROLE_ADMIN')" />
 		<security:intercept-url pattern="/updateuser/**" access="hasRole('ROLE_ADMIN')" />
 		<security:intercept-url pattern="/deleteuser/**" access="hasRole('ROLE_ADMIN')" />
 		<security:intercept-url pattern="/adjustattributeweights" access="isAuthenticated()" />

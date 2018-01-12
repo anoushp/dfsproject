@@ -33,6 +33,7 @@
             <div class="dropdown-menu" aria-labelledby="dropdown01">
               <a class="dropdown-item" href="${pageContext.request.contextPath}/attributes">Manage Attributes</a>
               <a class="dropdown-item" href="<c:url value='/admin'/>">Manage Users</a>
+              <a class="dropdown-item" href="<c:url value='/assessmentmanagement'/>">Manage Assessments</a>
              
             </div>
           </li>

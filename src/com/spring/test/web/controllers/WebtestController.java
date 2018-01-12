@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.HashMap;
 
 import javax.validation.Valid;
@@ -39,6 +40,7 @@ import com.spring.test.web.dao.Indicator;
 import com.spring.test.web.dao.IndicatorForm;
 import com.spring.test.web.dao.KPACategory;
 import com.spring.test.web.dao.Assessment;
+import com.spring.test.web.dao.AssessmentCompany;
 import com.spring.test.web.dao.AssessmentDetails;
 import com.spring.test.web.dao.AssessmentForm;
 import com.spring.test.web.dao.AssessmentId;
@@ -48,7 +50,9 @@ import com.spring.test.web.dao.CategoryConverter;
 import com.spring.test.web.dao.Dfstest;
 import com.spring.test.web.dao.DfstestForm;
 import com.spring.test.web.dao.Offer;
+import com.spring.test.web.dao.OperationSector;
 import com.spring.test.web.dao.User;
+import com.spring.test.web.service.AssessmentCompanyService;
 import com.spring.test.web.service.AssessmentDetailsService;
 import com.spring.test.web.service.AssessmentsService;
 import com.spring.test.web.service.AttributesService;
@@ -56,6 +60,7 @@ import com.spring.test.web.service.DfstestsService;
 import com.spring.test.web.service.IndicatorsService;
 import com.spring.test.web.service.KPACategoryService;
 import com.spring.test.web.service.OffersService;
+import com.spring.test.web.service.OperationSectorService;
 import com.spring.test.web.service.UsersService;
 
 @Controller
@@ -67,6 +72,8 @@ public class WebtestController {
 	private AttributesService attributesService;
 	private IndicatorsService indicatorsService;
 	private KPACategoryService kpaCategoryService;
+	private AssessmentCompanyService assessmentCompanyService;
+	private OperationSectorService operationSectorService;
 	private static List<Indicator> indicators = new ArrayList<Indicator>();
 	static {
 		indicators.add(new Indicator());
@@ -110,6 +117,17 @@ public class WebtestController {
 	public void setIndicatorsService(IndicatorsService indicatorsService) {
 		this.indicatorsService = indicatorsService;
 	}
+	
+	@Autowired
+	public void setAssessmentCompanyService(AssessmentCompanyService assessmentCompanyService) {
+		this.assessmentCompanyService =assessmentCompanyService;
+	}
+	
+
+	@Autowired
+	public void setOperationSectorService(OperationSectorService operationSectorService) {
+		this.operationSectorService =operationSectorService;
+	}
 
 	@RequestMapping(value = "/delete/assessment/{savedTitle}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -120,12 +138,67 @@ public class WebtestController {
 		assessmentsService.delete(username, savedTitle);
 		return a;
 	}
+	@RequestMapping(value = "/docreatecompany", method = RequestMethod.POST)
+	public String doCreateIndicator(Model model, @Valid AssessmentCompany ac, BindingResult result, Principal principal,
+			@RequestParam(value = "delete", required = false) String delete) {
+		
+		
+		List<String> countryList=new ArrayList<String>();
+		String[] locales = Locale.getISOCountries();
+		for (String countryCode : locales) {
 
+			Locale obj = new Locale("", countryCode);
+            countryList.add(obj.getDisplayCountry());
+			
+		}
+		List<OperationSector> os_list = operationSectorService.getOperationSector();
+
+		
+		if (result.hasErrors()) {
+			System.out.println("ERROR" + result.getFieldError());
+	
+			return "createcompany";
+		}
+
+		assessmentCompanyService.saveOrUpdate(ac);
+		model.addAttribute("company", ac);
+		 model.addAttribute("countries", countryList);
+		model.addAttribute("os_list", os_list);
+		model.addAttribute("attributecreated", "Attribute Successfully Created");
+		
+		return "createcompany";
+
+	}
+	@RequestMapping("/newcompany")
+	public String createcompany(Model model, Principal principal) {
+		AssessmentCompany acompany = null;
+		List<String> countryList=new ArrayList<String>();
+		String[] locales = Locale.getISOCountries();
+		for (String countryCode : locales) {
+
+			Locale obj = new Locale("", countryCode);
+            countryList.add(obj.getDisplayCountry());
+			
+		}
+		List<OperationSector> os_list = operationSectorService.getOperationSector();
+		System.out.println("AAAAAAAAAAAAAA");
+		if (acompany == null)
+			acompany = new AssessmentCompany();
+		List<Attribute> attributes = attributesService.getAllAttributes();
+		
+		model.addAttribute("company", acompany);
+		 model.addAttribute("countries", countryList);
+		model.addAttribute("os_list", os_list);
+
+		return "createcompany";
+	}
+	
 	@RequestMapping("/updateDfSAssessment/{savedTitle}")
 	public String updateDfSAssessment(@PathVariable String savedTitle, Model model,
 			@Valid @ModelAttribute("dfsassessform") AssessmentForm dfstestForm, BindingResult result,
 			Principal principal) {
 		List<AssessmentDetails> dfstests = dfstestForm.getAssessmentDetails();
+		List<OperationSector> os_list = operationSectorService.getOperationSector();
 		String username = principal.getName();
 
 		if (result.hasErrors()) {
@@ -152,6 +225,8 @@ public class WebtestController {
 
 			model.addAttribute("dfsassessform", dfstestForm);
 			model.addAttribute("dfsmap", cat_attr);
+			model.addAttribute("os_list", os_list);
+			model.addAttribute("countries", getCountryList());
 			model.addAttribute("formError", "error");
 			System.out.println("ERRORS");
 			for (Object object : result.getAllErrors()) {
@@ -167,6 +242,10 @@ public class WebtestController {
 		}
 
 		Assessment a = assessmentsService.getAssessment(username, savedTitle);
+		AssessmentCompany ac=assessmentCompanyService.getAssessmentCompany(dfstestForm.getAssessmentCompany().getId());
+		assessmentCompanyService.saveOrUpdate(dfstestForm.getAssessmentCompany());
+		
+		a.setCompany(ac);
 		AssessmentId asId = a.getId();
 		asId.setTitle(dfstestForm.getTitle());
 		asId.setUsername(username);
@@ -188,6 +267,7 @@ public class WebtestController {
 	public String createDfSAssessment(Model model, @Valid @ModelAttribute("dfsassessform") AssessmentForm dfstestForm,
 			BindingResult result, Principal principal) {
 		List<AssessmentDetails> dfstests = dfstestForm.getAssessmentDetails();
+		List<OperationSector> os_list = operationSectorService.getOperationSector();
 		String username = principal.getName();
 		if (assessmentsService.hasAssessment(username, dfstestForm.getTitle())) {
 			result.rejectValue("title", "DuplicateKey.assessment.id.name");
@@ -219,6 +299,8 @@ public class WebtestController {
 			model.addAttribute("dfsassessform", dfstestForm);
 			model.addAttribute("dfsmap", cat_attr);
 			model.addAttribute("formError", "error");
+			model.addAttribute("os_list", os_list);
+			model.addAttribute("countries", getCountryList());
 			System.out.println("ERRORS");
 			for (Object object : result.getAllErrors()) {
 				if (object instanceof FieldError) {
@@ -234,6 +316,9 @@ public class WebtestController {
 		AssessmentId asId = new AssessmentId(username, dfstestForm.getTitle());
 		Assessment a = new Assessment();
 		a.setId(asId);
+		AssessmentCompany ac=dfstestForm.getAssessmentCompany();
+		assessmentCompanyService.create(ac);
+		a.setCompany(dfstestForm.getAssessmentCompany());
 		assessmentsService.create(a);
 
 		for (AssessmentDetails dfs : dfstests) {
@@ -260,7 +345,12 @@ public class WebtestController {
 
 		List<Attribute> attrs = attributesService.getAllAttributes();
 		String username = principal.getName();
+		Assessment assessment=assessmentsService.getAssessment(username, title);
+		AssessmentCompany ac=assessment.getCompany();
+		if (ac==null) ac=new AssessmentCompany();
+		
 		List<AssessmentDetails> dfstests = assessmentDetailsService.getAssessmentDetails(username, title);
+		List<OperationSector> os_list = operationSectorService.getOperationSector();
 		HashMap<String, HashMap<Attribute, List<Indicator>>> cat_attr = new HashMap<String, HashMap<Attribute, List<Indicator>>>();
 		List<KPACategory> cat_list = kpaCategoryService.getKPACategory();
 		for (KPACategory cat : cat_list) {
@@ -282,7 +372,7 @@ public class WebtestController {
 
 		AssessmentForm dfstestForm = new AssessmentForm();
 		dfstestForm.setTitle(title);
-
+        dfstestForm.setAssessmentCompany(assessmentCompanyService.getAssessmentCompany(ac.getId()));
 		if (dfstests == null) {
 			dfstests = new ArrayList<AssessmentDetails>();
 			for (int i = 0; i < attributesService.getAllAttributes().size(); i++) {
@@ -295,6 +385,8 @@ public class WebtestController {
 		model.addAttribute("dfsassessform", dfstestForm);
 		model.addAttribute("dfsmap", cat_attr);
 		model.addAttribute("savedTitle", title);
+		model.addAttribute("os_list", os_list);
+		model.addAttribute("countries", getCountryList());
 
 		return "updateassessment";
 	}
@@ -304,6 +396,7 @@ public class WebtestController {
 		List<Attribute> attrs = attributesService.getAllAttributes();
 		HashMap<String, HashMap<Attribute, List<Indicator>>> cat_attr = new HashMap<String, HashMap<Attribute, List<Indicator>>>();
 		List<KPACategory> cat_list = kpaCategoryService.getKPACategory();
+		List<OperationSector> os_list = operationSectorService.getOperationSector();
 		for (KPACategory cat : cat_list) {
 			HashMap<Attribute, List<Indicator>> hm = new HashMap<Attribute, List<Indicator>>();
 			for (Attribute att : attrs) {
@@ -322,7 +415,7 @@ public class WebtestController {
 		}
 
 		List<AssessmentDetails> dfstests = null;
-
+        AssessmentCompany ac=new AssessmentCompany();
 		AssessmentForm dfstestForm = new AssessmentForm();
 
 		if (dfstests == null) {
@@ -333,9 +426,11 @@ public class WebtestController {
 		}
 
 		dfstestForm.setAssessmentDetails(dfstests);
-
+        dfstestForm.setAssessmentCompany(ac);
 		model.addAttribute("dfsassessform", dfstestForm);
+		model.addAttribute("countries", getCountryList());
 		model.addAttribute("dfsmap", cat_attr);
+		model.addAttribute("os_list", os_list);
 		return "newassessment";
 	}
 
@@ -445,6 +540,17 @@ public class WebtestController {
 		model.addAttribute("dfstestform", dfstestForm);
 		model.addAttribute("dfsmap", hm);
 		return "showdfstest";
+	}
+	private static List<String> getCountryList(){
+		List<String> countryList=new ArrayList<String>();
+		String[] locales = Locale.getISOCountries();
+		for (String countryCode : locales) {
+
+			Locale obj = new Locale("", countryCode);
+            countryList.add(obj.getDisplayCountry());
+			
+		}
+		return countryList;
 	}
 
 	/*

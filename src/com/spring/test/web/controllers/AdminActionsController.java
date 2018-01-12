@@ -21,11 +21,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.spring.test.web.dao.Assessment;
+import com.spring.test.web.dao.AssessmentCompany;
 import com.spring.test.web.dao.Attribute;
 import com.spring.test.web.dao.Indicator;
 import com.spring.test.web.dao.IndicatorForm;
 import com.spring.test.web.dao.KPACategory;
+import com.spring.test.web.dao.OperationSector;
 import com.spring.test.web.dao.User;
+import com.spring.test.web.service.AssessmentsService;
 import com.spring.test.web.service.AttributesService;
 import com.spring.test.web.service.IndicatorsService;
 import com.spring.test.web.service.KPACategoryService;
@@ -36,6 +40,7 @@ public class AdminActionsController {
 
 	private UsersService usersService;
 	private AttributesService attributesService;
+	private AssessmentsService assessmentsService;
 	private IndicatorsService indicatorsService;
 	private KPACategoryService kpaCategoryService;
 	private static List<Indicator> indicators = new ArrayList<Indicator>();
@@ -45,6 +50,11 @@ public class AdminActionsController {
 		indicators.add(new Indicator());
 		indicators.add(new Indicator());
 		indicators.add(new Indicator());
+	}
+	
+	@Autowired
+	public void setAssessmentsService(AssessmentsService assessmentsService) {
+		this.assessmentsService = assessmentsService;
 	}
 
 	@Autowired
@@ -65,6 +75,26 @@ public class AdminActionsController {
 	@Autowired
 	public void setIndicatorsService(IndicatorsService indicatorsService) {
 		this.indicatorsService = indicatorsService;
+	}
+	
+	@RequestMapping("/admin")
+	public String showAdmin(Model model) {
+
+		List<User> users = usersService.getAllUsers();
+		model.addAttribute("users", users);
+		return "admin";
+	}
+	
+	@RequestMapping("/assessmentmanagement")
+	public String showAssessments(Model model) {
+        List<Assessment> alist=assessmentsService.getAllAssessments();
+		if (alist!=null) {
+			model.addAttribute("assessment", "assessment");
+			model.addAttribute("dfsassessments", alist);
+
+		}
+		
+		return "assessmentmanagement";
 	}
 
 	@RequestMapping("/updateuser/{userid}")
@@ -150,6 +180,7 @@ public class AdminActionsController {
 		model.addAttribute("attribute", attr);
 		return "addindicator";
 	}
+
 
 	@RequestMapping("/attributes")
 	public String createAttribute(Model model, Principal principal) {

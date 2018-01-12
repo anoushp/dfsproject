@@ -45,6 +45,14 @@ public class AssessmentsDao {
 
 	}
 	@SuppressWarnings("unchecked")
+	public List<Assessment> getAllAssessments(){
+
+		List<Assessment> assessments =session().createQuery("from Assessment").list();
+		
+		return assessments;
+
+	}
+	@SuppressWarnings("unchecked")
 	public Assessment getAssessment(String name,String title){
 
 		Criteria crit=session().createCriteria(Assessment.class);

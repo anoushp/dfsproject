@@ -57,6 +57,13 @@ public class AssessmentsService {
 		return dfstests;
 	}
 	
+	public List<Assessment> getAllAssessments() {
+		
+		List<Assessment> dfstests=assessmentsDao.getAllAssessments();
+		if (dfstests==null) return null;
+		return dfstests;
+	}
+	
 	public Assessment getAssessment(String username, String title) {
 		if (username==null)
 			return null;

@@ -20,7 +20,8 @@
 	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
         <property name="converters">
             <set>
-                <bean class="com.spring.test.web.dao.CategoryConverter" />              
+                <bean class="com.spring.test.web.dao.CategoryConverter" />  
+                <bean class="com.spring.test.web.dao.SectorConverter" />              
             </set>
         </property>
     </bean>

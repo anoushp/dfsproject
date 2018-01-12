@@ -81,13 +81,7 @@ public class LoginController {
 
 	}
 
-	@RequestMapping("/admin")
-	public String showAdmin(Model model) {
-
-		List<User> users = usersService.getAllUsers();
-		model.addAttribute("users", users);
-		return "admin";
-	}
+	
 
 	@RequestMapping(value = "/createaccount", method = RequestMethod.POST)
 	public String createAccount(Model model, @Validated(FormValidationGroup.class) User user, BindingResult result) {

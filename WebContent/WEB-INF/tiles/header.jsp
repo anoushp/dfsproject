@@ -9,7 +9,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
 
 <img id="img_logo" src="<c:url value='/static/images/dfsproject.png' />"/>
-<a class="title" href="<c:url value='/'/>">DfS-CMI Web Tool</a>
+<a class="title" href="<c:url value='/'/>">DfOSH-CMI Web Tool</a>
 
 <sec:authorize access="!isAuthenticated()">
 <a class="login" href="<c:url value='/login'/>">Log In</a>

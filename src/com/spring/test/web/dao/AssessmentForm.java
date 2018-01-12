@@ -7,13 +7,9 @@ import javax.validation.Valid;
 public class AssessmentForm {
 	@Valid
 	String title;
-	public String getTitle() {
-		return title;
-	}
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+	@Valid
+	AssessmentCompany assessmentCompany;
 
 	@Valid
 	private List<AssessmentDetails> assessmentDetails;
@@ -25,6 +21,22 @@ public class AssessmentForm {
 	public void setAssessmentDetails(List<AssessmentDetails> assessmentDetails) {
 		this.assessmentDetails = assessmentDetails;
 	}
-	
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public AssessmentCompany getAssessmentCompany() {
+		return assessmentCompany;
+	}
+
+	public void setAssessmentCompany(AssessmentCompany assessmentCompany) {
+		this.assessmentCompany = assessmentCompany;
+	}
+
 
 }
