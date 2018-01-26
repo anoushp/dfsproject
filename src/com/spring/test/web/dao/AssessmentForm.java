@@ -12,14 +12,14 @@ public class AssessmentForm {
 	AssessmentCompany assessmentCompany;
 
 	@Valid
-	private List<AssessmentDetails> assessmentDetails;
+	private List<AssessmentDetailsForm> assessmentDetailsForm;
 
-	public List<AssessmentDetails> getAssessmentDetails() {
-		return assessmentDetails;
+	public List<AssessmentDetailsForm> getAssessmentDetailsForm() {
+		return assessmentDetailsForm;
 	}
 
-	public void setAssessmentDetails(List<AssessmentDetails> assessmentDetails) {
-		this.assessmentDetails = assessmentDetails;
+	public void setAssessmentDetailsForm(List<AssessmentDetailsForm> assessmentDetailsForm) {
+		this.assessmentDetailsForm = assessmentDetailsForm;
 	}
 
 	public String getTitle() {

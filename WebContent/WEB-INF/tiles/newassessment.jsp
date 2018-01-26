@@ -3,12 +3,37 @@
 <%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link
+	href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"
+	rel="stylesheet">
+<link rel="stylesheet"
+	href="//netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 <link rel="stylesheet"
 	href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
 <h1>DESIGN for SAFETY CAPABILITY MATURITY INDICATOR</h1>
+<script>
+	$(document).ready(function() {
+		$('[data-toggle="tooltip"]').tooltip();
+	});
+</script>
+<style>
+.tooltip>.tooltip-inner {
+	border: 1px solid;
+	padding: 10px;
+	max-width: 450px;
+	color: black;
+	text-align: left;
+	background-color: #D3D3D3;;
+	background: #D3D3D3;;
 
+}
+
+.tooltip>.tooltip-arrow {
+	border-bottom-color: black;
+}
+
+
+</style>
 <p class="ss-par">The DfS-CMI tool is an assessment tool to enable
 	architectural and design firms to improve their DfS capability.</p>
 <sf:form method="post"
@@ -87,10 +112,10 @@
    <c:forEach var="cat_dfstst" items="${dfsmap}" varStatus="loopmain">
    <h4 class="ss-attr-desc">${cat_dfstst.key}</h4>
 	<c:forEach var="dfstst" items="${cat_dfstst.value}" varStatus="loop1">
-		<sf:input type="hidden" name="assessmentDetails[${ counter}].id"
-			path="assessmentDetails[${ counter}].id" />
-		<sf:input type="hidden" name="assessmentDetails[${ counter}].attribute"
-			path="assessmentDetails[${ counter}].attribute.id"
+		<sf:input type="hidden" name="assessmentDetailsForm[${ counter}].assessmentDetails.id"
+			path="assessmentDetailsForm[${ counter}].assessmentDetails.id" />
+		<sf:input type="hidden" name="assessmentDetailsForm[${ counter}].assessmentDetails.attribute"
+			path="assessmentDetailsForm[${ counter}].assessmentDetails.attribute.id"
 			value="${dfstst.key.id}" />
 		
 		<h4 class="ss-attr-desc">Attribute:
@@ -99,22 +124,37 @@
 			<table>
 				<tbody>
 				
-				<spring:bind path="assessmentDetails[${ counter}].matlevel">
-                 
-             <c:if test="${status.error}">
-            <tr><div class="errorblock"><sf:errors path="assessmentDetails[${ counter}].matlevel"></sf:errors></div></tr>
-             </c:if>
-                </spring:bind>
+				<spring:bind
+							path="assessmentDetailsForm[${ counter}].assessmentDetails.*">
+
+							<c:if test="${status.error}">
+
+								<tr>
+									<div class="errorblock">
+										<c:forEach items="${status.errorMessages}" var="error">
+        Error code: <c:out value="${error}" />
+											<br>
+										</c:forEach>
+									</div>
+								</tr>
+							</c:if>
+						</spring:bind>
 				
 			
 					<c:forEach var="ind" items="${dfstst.value }" varStatus="loop">
 
 						<tr>
-							<td nowrap><sf:radiobutton
-									path="assessmentDetails[${ counter}].matlevel"
-									value="${loop.index+1}" />&nbsp ${loop.index+1} &nbsp</td>
-									
-							<td><c:if test="${ind != null}">${ind.text}
+							<td nowrap><sf:checkbox
+									path="assessmentDetailsForm[${ counter}].assessmentDetails.matlevels"
+									value="${loop.index+1}" />&nbsp ML${loop.index} &nbsp </td>
+							<td><sf:select path="assessmentDetailsForm[${ counter}].assessmentDetails.completion_criteria[${loop.index}]" 
+							name="assessmentDetailsForm[${ counter}].assessmentDetails.completion_criteria[${loop.index}]"
+							multiple="false">
+							    <sf:option value=""/>
+							    <sf:options items="${mat_compliance}" />
+                               </sf:select>
+							    </td>				
+							<td><c:if test="${ind != null}"><c:out value="${ind.text}" escapeXml="false"/> <a href="#" data-toggle="tooltip" data-html="true" title="${ind.example}">Indicator Example</a>    
     </c:if></td>
 						</tr>
 

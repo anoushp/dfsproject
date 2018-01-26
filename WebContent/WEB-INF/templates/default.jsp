@@ -9,8 +9,7 @@
 <meta name="_csrf_header" content="${_csrf.headerName}" />
 <link href="${pageContext.request.contextPath}/static/css/main.css"
 	rel="stylesheet" type="text/css" />
-<link href="webjars/bootstrap/3.3.6/css/bootstrap.min.css"
-        rel="stylesheet">
+
  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous"></script>    
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">

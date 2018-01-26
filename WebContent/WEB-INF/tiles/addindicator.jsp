@@ -56,6 +56,19 @@
 				</div>
 			</div>
 		</div>
+					<div class="form-group">
+			<label class="control-label">Example</label>
+			<div class="inputGroupContainer">
+				<div class="input-group">
+					<sf:textarea path="indicators[${status.index}].example" name="indicators[${status.index}].example" 
+						class="form-control" type="text" />
+					<div class="error">
+						<sf:errors path="indicators[${status.index}].example"></sf:errors>
+					</div>
+
+				</div>
+			</div>
+		</div>
 
 		</c:forEach>
 				<div class="form-group">

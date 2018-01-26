@@ -59,6 +59,7 @@ List of indicators for attribute "${attribute.name}"
     <tr>
     <th scope="col">Maturity Level</th>
     <th scope="col">Description</th>
+    <th scope="col">Example</th>
 
  </tr>
 </thead>
@@ -66,6 +67,7 @@ List of indicators for attribute "${attribute.name}"
 <c:forEach var="ind" items="${indicators}">
 <tr><td><c:out value="${ind.matlevel}"></c:out></td>
 <td><c:out value="${ind.text}"></c:out></td>
+<td><c:out value="${ind.example}"></c:out></td>
 
 
 </tr>

@@ -39,9 +39,11 @@ import com.spring.test.web.dao.FormValidationGroup;
 import com.spring.test.web.dao.Indicator;
 import com.spring.test.web.dao.IndicatorForm;
 import com.spring.test.web.dao.KPACategory;
+import com.spring.test.web.dao.MaturityCompliance;
 import com.spring.test.web.dao.Assessment;
 import com.spring.test.web.dao.AssessmentCompany;
 import com.spring.test.web.dao.AssessmentDetails;
+import com.spring.test.web.dao.AssessmentDetailsForm;
 import com.spring.test.web.dao.AssessmentForm;
 import com.spring.test.web.dao.AssessmentId;
 import com.spring.test.web.dao.Attribute;
@@ -65,7 +67,7 @@ import com.spring.test.web.service.UsersService;
 
 @Controller
 public class WebtestController {
-	private OffersService offersService;
+	
 	private DfstestsService dfstestsService;
 	private AssessmentsService assessmentsService;
 	private AssessmentDetailsService assessmentDetailsService;
@@ -98,10 +100,7 @@ public class WebtestController {
 		this.assessmentDetailsService = assessmentDetailsService;
 	}
 
-	@Autowired
-	public void setOffersService(OffersService offersService) {
-		this.offersService = offersService;
-	}
+	
 
 	@Autowired
 	public void setAttributesService(AttributesService attributesService) {
@@ -197,11 +196,13 @@ public class WebtestController {
 	public String updateDfSAssessment(@PathVariable String savedTitle, Model model,
 			@Valid @ModelAttribute("dfsassessform") AssessmentForm dfstestForm, BindingResult result,
 			Principal principal) {
-		List<AssessmentDetails> dfstests = dfstestForm.getAssessmentDetails();
+		List<AssessmentDetailsForm> dfstests = dfstestForm.getAssessmentDetailsForm();
 		List<OperationSector> os_list = operationSectorService.getOperationSector();
+		MaturityCompliance[] matcompliancevalues=MaturityCompliance.values();
 		String username = principal.getName();
 
 		if (result.hasErrors()) {
+			System.out.println("ERROR" + result.getFieldError());
 
 			List<Attribute> attrs = attributesService.getAllAttributes();
 			HashMap<String, HashMap<Attribute, List<Indicator>>> cat_attr = new HashMap<String, HashMap<Attribute, List<Indicator>>>();
@@ -226,6 +227,8 @@ public class WebtestController {
 			model.addAttribute("dfsassessform", dfstestForm);
 			model.addAttribute("dfsmap", cat_attr);
 			model.addAttribute("os_list", os_list);
+			model.addAttribute("mat_compliance", matcompliancevalues);
+			
 			model.addAttribute("countries", getCountryList());
 			model.addAttribute("formError", "error");
 			System.out.println("ERRORS");
@@ -238,7 +241,7 @@ public class WebtestController {
 				}
 			}
 
-			return "newassessment";
+			return "updateassessment";
 		}
 
 		Assessment a = assessmentsService.getAssessment(username, savedTitle);
@@ -253,8 +256,9 @@ public class WebtestController {
 		// assessmentsService.delete(username,savedTitle);
 		assessmentsService.saveOrUpdate(a);
 
-		for (AssessmentDetails dfs : dfstests) {
+		for (AssessmentDetailsForm dfsform : dfstests) {
 
+			AssessmentDetails dfs=dfsform.getAssessmentDetails();
 			dfs.getAssessment().setId(new AssessmentId(username, dfstestForm.getTitle()));
 			assessmentDetailsService.saveOrUpdate(dfs);
 		}
@@ -266,7 +270,7 @@ public class WebtestController {
 	@RequestMapping("/createDfSAssessment")
 	public String createDfSAssessment(Model model, @Valid @ModelAttribute("dfsassessform") AssessmentForm dfstestForm,
 			BindingResult result, Principal principal) {
-		List<AssessmentDetails> dfstests = dfstestForm.getAssessmentDetails();
+		List<AssessmentDetailsForm> dfstests = dfstestForm.getAssessmentDetailsForm();
 		List<OperationSector> os_list = operationSectorService.getOperationSector();
 		String username = principal.getName();
 		if (assessmentsService.hasAssessment(username, dfstestForm.getTitle())) {
@@ -279,6 +283,7 @@ public class WebtestController {
 			List<Attribute> attrs = attributesService.getAllAttributes();
 			HashMap<String, HashMap<Attribute, List<Indicator>>> cat_attr = new HashMap<String, HashMap<Attribute, List<Indicator>>>();
 			List<KPACategory> cat_list = kpaCategoryService.getKPACategory();
+			MaturityCompliance[] matcompliancevalues=MaturityCompliance.values();
 			for (KPACategory cat : cat_list) {
 				HashMap<Attribute, List<Indicator>> hm = new HashMap<Attribute, List<Indicator>>();
 				for (Attribute att : attrs) {
@@ -301,6 +306,7 @@ public class WebtestController {
 			model.addAttribute("formError", "error");
 			model.addAttribute("os_list", os_list);
 			model.addAttribute("countries", getCountryList());
+			model.addAttribute("mat_compliance", matcompliancevalues);
 			System.out.println("ERRORS");
 			for (Object object : result.getAllErrors()) {
 				if (object instanceof FieldError) {
@@ -321,8 +327,9 @@ public class WebtestController {
 		a.setCompany(dfstestForm.getAssessmentCompany());
 		assessmentsService.create(a);
 
-		for (AssessmentDetails dfs : dfstests) {
+		for (AssessmentDetailsForm dfsform : dfstests) {
 
+			AssessmentDetails dfs=dfsform.getAssessmentDetails();
 			dfs.getAssessment().setId(asId);
 			assessmentDetailsService.saveOrUpdate(dfs);
 		}
@@ -345,11 +352,14 @@ public class WebtestController {
 
 		List<Attribute> attrs = attributesService.getAllAttributes();
 		String username = principal.getName();
+		MaturityCompliance[] matcompliancevalues=MaturityCompliance.values();
 		Assessment assessment=assessmentsService.getAssessment(username, title);
 		AssessmentCompany ac=assessment.getCompany();
 		if (ac==null) ac=new AssessmentCompany();
 		
 		List<AssessmentDetails> dfstests = assessmentDetailsService.getAssessmentDetails(username, title);
+		List<AssessmentDetailsForm> assessmentdetails=new ArrayList<AssessmentDetailsForm>();
+		
 		List<OperationSector> os_list = operationSectorService.getOperationSector();
 		HashMap<String, HashMap<Attribute, List<Indicator>>> cat_attr = new HashMap<String, HashMap<Attribute, List<Indicator>>>();
 		List<KPACategory> cat_list = kpaCategoryService.getKPACategory();
@@ -379,24 +389,33 @@ public class WebtestController {
 				dfstests.add(new AssessmentDetails());
 			}
 		}
+		for (int i=0; i<dfstests.size();i++){
+			AssessmentDetailsForm assessmentDetailsForm=new AssessmentDetailsForm();
+			assessmentDetailsForm.setAssessmentDetails(dfstests.get(i));
+			assessmentdetails.add(assessmentDetailsForm);
+		}
 
-		dfstestForm.setAssessmentDetails(dfstests);
+		dfstestForm.setAssessmentDetailsForm(assessmentdetails);
 
 		model.addAttribute("dfsassessform", dfstestForm);
 		model.addAttribute("dfsmap", cat_attr);
 		model.addAttribute("savedTitle", title);
 		model.addAttribute("os_list", os_list);
 		model.addAttribute("countries", getCountryList());
+		model.addAttribute("mat_compliance", matcompliancevalues);
 
 		return "updateassessment";
 	}
 
 	@RequestMapping("/newassessment")
+	
 	public String newDfstest(Model model, Principal principal) {
 		List<Attribute> attrs = attributesService.getAllAttributes();
 		HashMap<String, HashMap<Attribute, List<Indicator>>> cat_attr = new HashMap<String, HashMap<Attribute, List<Indicator>>>();
 		List<KPACategory> cat_list = kpaCategoryService.getKPACategory();
 		List<OperationSector> os_list = operationSectorService.getOperationSector();
+		List<AssessmentDetailsForm> assessmentdetails=new ArrayList<AssessmentDetailsForm>();
+		MaturityCompliance[] matcompliancevalues=MaturityCompliance.values();
 		for (KPACategory cat : cat_list) {
 			HashMap<Attribute, List<Indicator>> hm = new HashMap<Attribute, List<Indicator>>();
 			for (Attribute att : attrs) {
@@ -424,13 +443,18 @@ public class WebtestController {
 				dfstests.add(new AssessmentDetails());
 			}
 		}
-
-		dfstestForm.setAssessmentDetails(dfstests);
+		for (int i=0; i<dfstests.size();i++){
+			AssessmentDetailsForm assessmentDetailsForm=new AssessmentDetailsForm();
+			assessmentDetailsForm.setAssessmentDetails(dfstests.get(i));
+			assessmentdetails.add(assessmentDetailsForm);
+		}
+		dfstestForm.setAssessmentDetailsForm(assessmentdetails);
         dfstestForm.setAssessmentCompany(ac);
 		model.addAttribute("dfsassessform", dfstestForm);
 		model.addAttribute("countries", getCountryList());
 		model.addAttribute("dfsmap", cat_attr);
 		model.addAttribute("os_list", os_list);
+		model.addAttribute("mat_compliance", matcompliancevalues);
 		return "newassessment";
 	}
 

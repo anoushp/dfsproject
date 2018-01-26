@@ -21,6 +21,8 @@ public class Indicator {
 	@NotBlank
 	private String text;
 	
+	private String example;
+	
 	@NotBlank
 	private int matlevel;
 	
@@ -32,11 +34,12 @@ public class Indicator {
 		this.attribute=new Attribute();
 	}
 	
-	public Indicator(int matlevel, String text, Attribute attribute) {
+	public Indicator(int matlevel, String text, String example, Attribute attribute) {
 		super();
 		this.matlevel = matlevel;
 		this.text = text;
 		this.attribute = attribute;
+		this.example=example;
 	}
 
 	public int getId() {
@@ -64,11 +67,12 @@ public class Indicator {
 		this.attribute = attribute;
 	}
 
-	public Indicator(int id,int matlevel, String text, Attribute attribute) {
+	public Indicator(int id,int matlevel, String text, String example, Attribute attribute) {
 		super();
 		this.id=id;
 		this.matlevel = matlevel;
 		this.text = text;
+		this.example=example;
 		this.attribute = attribute;
 	}
 	
@@ -84,11 +88,20 @@ public class Indicator {
 		this.matlevel = matlevel;
 	}
 
+	public String getExample() {
+		return example;
+	}
+
+	public void setExample(String example) {
+		this.example = example;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((attribute == null) ? 0 : attribute.hashCode());
+		result = prime * result + ((example == null) ? 0 : example.hashCode());
 		result = prime * result + id;
 		result = prime * result + matlevel;
 		result = prime * result + ((text == null) ? 0 : text.hashCode());
@@ -109,6 +122,11 @@ public class Indicator {
 				return false;
 		} else if (!attribute.equals(other.attribute))
 			return false;
+		if (example == null) {
+			if (other.example != null)
+				return false;
+		} else if (!example.equals(other.example))
+			return false;
 		if (id != other.id)
 			return false;
 		if (matlevel != other.matlevel)
@@ -123,8 +141,11 @@ public class Indicator {
 
 	@Override
 	public String toString() {
-		return "Indicator [id=" + id + ", text=" + text + ", matlevel=" + matlevel + ", attribute=" + attribute + "]";
+		return "Indicator [id=" + id + ", text=" + text + ", example=" + example + ", matlevel=" + matlevel
+				+ ", attribute=" + attribute + "]";
 	}
+
+
 
 	
 
