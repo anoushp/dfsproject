@@ -26,6 +26,7 @@
 		<security:intercept-url pattern="/dfsassessments" access="isAuthenticated()" />
 		<security:intercept-url pattern="/delete/assessment/**" access="isAuthenticated()" />
 		<security:intercept-url pattern="/dfsassessments/update/**" access="isAuthenticated()" />
+		<security:intercept-url pattern="/dfsassessments/assessment/**" access="isAuthenticated()" />
 		<security:intercept-url pattern="/createDfSAssessment" access="isAuthenticated()" />
 		<security:intercept-url pattern="/updateDfSAssessment/**" access="isAuthenticated()" />
 		<security:intercept-url pattern="/newassessment" access="isAuthenticated()" />

@@ -154,7 +154,7 @@
 							<tr>
 								<td nowrap><sf:checkbox
 										path="assessmentDetailsForm[${ counter}].assessmentDetails.matlevels"
-										value="${loop.index+1}" />&nbsp ML${loop.index} &nbsp</td>
+										value="${loop.index+1}" />&nbsp ML${loop.index+1} &nbsp</td>
 								<td><sf:select
 										path="assessmentDetailsForm[${ counter}].assessmentDetails.completion_criteria[${loop.index}]"
 										name="assessmentDetailsForm[${ counter}].assessmentDetails.completion_criteria[${loop.index}]"

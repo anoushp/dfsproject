@@ -6,7 +6,7 @@ public enum CategoryType {
 	   INFRASTRUCTURE ("Infrastructure"),
 	   SYSTEMS ("Systems"),
 	   COLLABORATION ("Collaboration"),
-	   RESOURCES ("Resources");
+	   EXPERIENCE ("Experience");
      
     String categoryType;
 

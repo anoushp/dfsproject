@@ -65,6 +65,10 @@
 <put-attribute name="title" value="View Assessments"></put-attribute>
 <put-attribute name="content" value="/WEB-INF/tiles/assessmentmanagement.jsp"></put-attribute>
 </definition>
+<definition name="viewassessmentresults" extends="offers.base">
+<put-attribute name="title" value="View Assessment Results"></put-attribute>
+<put-attribute name="content" value="/WEB-INF/tiles/viewassessmentresults.jsp"></put-attribute>
+</definition>
 <definition name="newassessment" extends="offers.base">
 <put-attribute name="title" value="Create a new assessment"></put-attribute>
 <put-attribute name="content" value="/WEB-INF/tiles/newassessment.jsp"></put-attribute>

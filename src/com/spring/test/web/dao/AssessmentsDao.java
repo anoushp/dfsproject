@@ -40,15 +40,26 @@ public class AssessmentsDao {
 		Criteria crit=session().createCriteria(Assessment.class);
 
 		crit.add(Restrictions.eq("id.username", name));
-
-		return crit.list();
+        List<Assessment> aslist=crit.list();
+        for (Assessment assessment:aslist){
+			 AssessmentCompany ac=assessment.getCompany();
+			if (ac!=null){
+				Hibernate.initialize(ac.getOpSectors());
+			}
+		}
+		return aslist;
 
 	}
 	@SuppressWarnings("unchecked")
 	public List<Assessment> getAllAssessments(){
 
 		List<Assessment> assessments =session().createQuery("from Assessment").list();
-		
+		for (Assessment assessment:assessments){
+			 AssessmentCompany ac=assessment.getCompany();
+			if (ac!=null){
+				Hibernate.initialize(ac.getOpSectors());
+			}
+		}
 		return assessments;
 
 	}
@@ -59,8 +70,12 @@ public class AssessmentsDao {
 
 		crit.add(Restrictions.eq("id.username", name));
 		crit.add(Restrictions.eq("id.title", title));
-
-		return (Assessment)crit.uniqueResult();
+        Assessment assessment=(Assessment)crit.uniqueResult();
+        AssessmentCompany ac=assessment.getCompany();
+        if (ac!=null){
+			Hibernate.initialize(ac.getOpSectors());
+		}
+		return assessment;
 
 	}
 	public void saveOrUpdate(Assessment assessment) {

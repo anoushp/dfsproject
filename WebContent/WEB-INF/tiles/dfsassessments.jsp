@@ -59,16 +59,26 @@
 <thead>
     <tr>
     <th scope="col">Assessment Title</th>
+    <th scope="col">Company Name</th>
+    <th scope="col">Company Size</th>
+    <th scope="col">Sector</th>
     <th scope="col">Actions/<th>
   </tr>
 </thead>
 
 <c:forEach var="assmt" items="${dfsassessments}">
 <tr><td><c:out value="${assmt.id.title}"></c:out></td>
+<td><c:out value="${assmt.company.companyname}"></c:out></td>
+<td><c:out value="${assmt.company.size}"></c:out></td>
+<td><c:forEach items="${assmt.company.opSectors}" var="opSector" >
+	<c:out value="${opSector.sector}"></c:out><br>
+	</c:forEach></td>
+
 
 <td>
 	<a href="${pageContext.request.contextPath}/dfsassessments/update/${assmt.id.title}">Update</a><br/>
 	<a href="${pageContext.request.contextPath}/delete/assessment/${assmt.id.title}.json">Delete</a><br/>
+	<a href="${pageContext.request.contextPath}/dfsassessments/assessment/${username}/${assmt.id.title}">View Results</a><br/>
 	
 	</td>
 </tr>

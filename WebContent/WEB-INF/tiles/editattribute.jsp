@@ -8,7 +8,8 @@
 	action="${pageContext.request.contextPath}/attributes/editattribute"
 	commandName="attribute" class="well form-horizontal" >
 	<sf:input type="hidden" name="id" path="id" />
-	<sf:input type="hidden" name="weight" path="weight" value="0.1" />
+	<sf:input type="hidden" name="weight" path="weight" />
+	<sf:input type="hidden" name="weight" path="sector_weight" />
 	<fieldset>
 
 		<!-- Form Name -->

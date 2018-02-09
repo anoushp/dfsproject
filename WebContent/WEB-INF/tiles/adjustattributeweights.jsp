@@ -15,7 +15,7 @@
 	
 	<div class="ss-form-entry">
 	<table>
-	<tr><td><b>Attribute Name</b></td><td><b>Attribute Categories</b></td><td><b>Attribute weight</b></td></tr>
+	<tr><td><b>Attribute Name</b></td><td><b>Attribute Categories</b></td><td><b>Attribute weight by category</b></td><td><b>Attribute weight</b></td></tr>
 	<c:forEach items="${attributeForm.attributes}" var="attribute" varStatus="status">
 	
 	<sf:input type="hidden" name="attributes[${status.index}].id" path="attributes[${status.index}].id" />
@@ -27,8 +27,11 @@
 	<c:out value="${kpa.category}"></c:out>
 	</c:forEach>
 	</td>
+	<td><sf:input path="attributes[${status.index}].sector_weight" name="attributes[${status.index}].sector_weight" type="text" style="width:30px;" /><br />
+	<div class="error"><sf:errors path="attributes[${status.index}].sector_weight"></sf:errors></div></td>
 	<td><sf:input path="attributes[${status.index}].weight" name="attributes[${status.index}].weight" type="text" style="width:30px;" /><br />
 	<div class="error"><sf:errors path="attributes[${status.index}].weight"></sf:errors></div></td>
+	
 	<sf:select path="attributes[${status.index}].kpaCategories" name="attributes[${status.index}].kpaCategories" items="${cat_list}" multiple="true" itemValue="id" itemLabel="category" style="display: none"/>
 	</c:forEach>
 	

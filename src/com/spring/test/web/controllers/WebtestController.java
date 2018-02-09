@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import javax.validation.Valid;
 import javax.validation.Validation;
@@ -40,6 +41,9 @@ import com.spring.test.web.dao.Indicator;
 import com.spring.test.web.dao.IndicatorForm;
 import com.spring.test.web.dao.KPACategory;
 import com.spring.test.web.dao.MaturityCompliance;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.test.web.dao.Assessment;
 import com.spring.test.web.dao.AssessmentCompany;
 import com.spring.test.web.dao.AssessmentDetails;
@@ -48,6 +52,8 @@ import com.spring.test.web.dao.AssessmentForm;
 import com.spring.test.web.dao.AssessmentId;
 import com.spring.test.web.dao.Attribute;
 import com.spring.test.web.dao.AttributeForm;
+import com.spring.test.web.dao.AttributeWeight;
+import com.spring.test.web.dao.AttributeWeightData;
 import com.spring.test.web.dao.CategoryConverter;
 import com.spring.test.web.dao.Dfstest;
 import com.spring.test.web.dao.DfstestForm;
@@ -190,6 +196,117 @@ public class WebtestController {
 		model.addAttribute("os_list", os_list);
 
 		return "createcompany";
+	}
+	@RequestMapping("/dfsassessments/assessment/{username}/{title}")
+	public String generateDfstestResults(@PathVariable String username, @PathVariable String title, Model model) {
+		Assessment assessment=assessmentsService.getAssessment(username, title);
+		List<AssessmentDetails> dfstests = assessmentDetailsService.getAssessmentDetails(username, title);
+		List<KPACategory> cat_list = kpaCategoryService.getKPACategory();
+		List<String> matlevels;
+		List<String> completion_criteria;
+		
+		double score=0;
+		double max_score=0;
+		HashMap<String, Double> hm_score=new HashMap<String, Double>();
+		HashMap<String, AttributeWeightData> hm_weight=new HashMap<String, AttributeWeightData>();
+		AttributeWeightData aweightdata;
+		for (KPACategory cat: cat_list){
+			hm_score.put(cat.getCategory(), new Double(0));
+			hm_weight.put(cat.getCategory(), new AttributeWeightData());
+		}
+		
+		for (AssessmentDetails dfstest: dfstests){
+			matlevels=dfstest.getMatlevels();
+			completion_criteria=dfstest.getCompletion_criteria();
+			max_score+=dfstest.getAttribute().getWeight()*5/100.0;
+			
+			String cat=attributesService.getAttribute(dfstest.getAttribute().getId()).getKpaCategories().get(0).getCategory();
+			 aweightdata=hm_weight.get(cat);
+			    
+			    List<String>attrnames=aweightdata.getAttrnames();
+			    List<Double>attrweights=aweightdata.getAttrweights();
+			if (matlevels.size()==1){
+				
+				int value1=Integer.valueOf(matlevels.get(0));
+				if (completion_criteria.get(value1-1).equals("FULLY")){
+					score+=value1*(dfstest.getAttribute().getWeight()/100.0);
+				    hm_score.put(cat, Double.sum(hm_score.get(cat).doubleValue(),value1*(dfstest.getAttribute().getSector_weight()/100.0)));
+				   
+				    attrnames.add(dfstest.getAttribute().getName());
+				    attrweights.add(value1*(dfstest.getAttribute().getSector_weight()/100.0));
+				  
+				    hm_weight.put(cat, aweightdata);
+				}
+				else if (completion_criteria.get(value1-1).equals("PARTIALLY")){
+					int value2=value1-1;
+					double mean=(value1+value2)/2.0;
+					score+=mean*(dfstest.getAttribute().getWeight()/100.0);
+					hm_score.put(cat, Double.sum(hm_score.get(cat).doubleValue(),mean*(dfstest.getAttribute().getSector_weight()/100.0)));
+				    aweightdata=hm_weight.get(cat);
+				    attrnames.add(dfstest.getAttribute().getName());
+				    attrweights.add(mean*(dfstest.getAttribute().getSector_weight()/100.0));
+				  
+				    hm_weight.put(cat, aweightdata);
+				}
+					
+			}
+			else if (matlevels.size()==2){
+				int value1=Integer.valueOf(matlevels.get(0)); 
+				int value2=Integer.valueOf(matlevels.get(1)); 
+				double mean=(value1+value2)/2.0;
+				score+=mean*(dfstest.getAttribute().getWeight()/100.0);
+				hm_score.put(cat, Double.sum(hm_score.get(cat).doubleValue(),mean*(dfstest.getAttribute().getSector_weight()/100.0)));
+			    aweightdata=hm_weight.get(cat);
+			    attrnames.add(dfstest.getAttribute().getName());
+			    attrweights.add(mean*(dfstest.getAttribute().getSector_weight()/100.0));
+			  
+			    hm_weight.put(cat, aweightdata);
+			}
+			
+		}
+		System.out.println(max_score);
+		ArrayList<String> mapkeys=new ArrayList<String>();
+		ArrayList<String> categories=new ArrayList<String>();
+		ArrayList<Double> mapvalues=new ArrayList<Double>();
+		Iterator iterator = hm_score.keySet().iterator();
+		Iterator iterator1 = hm_weight.keySet().iterator();
+
+		while (iterator.hasNext()) {
+		   String key = iterator.next().toString();
+		   mapkeys.add('"'+key+'"');
+		   Double value = hm_score.get(key);
+		   mapvalues.add(value);
+
+		   System.out.println(key + " " + value);
+		}
+		while (iterator1.hasNext()) {
+			   String key = iterator1.next().toString();
+			   categories.add(key);
+			   List<String> an=hm_weight.get(key).getAttrnames();
+			   List<Double> aw=hm_weight.get(key).getAttrweights();
+			   System.out.println(key);
+			   for (int i=0;i<an.size();i++ ){
+				   System.out.println(an.get(i)+" "+aw.get(i));
+			   }
+			}
+		String jsonInString="";
+		ObjectMapper mapper = new ObjectMapper();
+		try{
+		jsonInString = mapper.writeValueAsString(hm_weight);
+		
+		//System.out.println(jsonInString);
+		}
+		catch (JsonProcessingException e) { System.out.println("JSON EXCEPTION");}
+		model.addAttribute("title", title);
+		model.addAttribute("mapkeys", mapkeys);
+		model.addAttribute("mapvalues", mapvalues);
+		model.addAttribute("categories", categories);
+
+		model.addAttribute("percentage", score*100/max_score);
+		model.addAttribute("score",score);
+		model.addAttribute("hashmap",hm_score);
+		model.addAttribute("hashmapweight",hm_weight);
+		return "viewassessmentresults";
 	}
 	
 	@RequestMapping("/updateDfSAssessment/{savedTitle}")
@@ -341,6 +458,7 @@ public class WebtestController {
 		String username = principal.getName();
 		if (assessmentsService.hasAssessment(username)) {
 			model.addAttribute("assessment", "assessment");
+			model.addAttribute("username", username);
 			model.addAttribute("dfsassessments", assessmentsService.getAssessments(username));
 
 		}
@@ -479,7 +597,7 @@ public class WebtestController {
 		}
 		for (Attribute attr : attrs) {
 
-			attributesService.updateAttribute(attr);
+			attributesService.updateAttributeWeight(attr);
 		}
 		model.addAttribute("adjusted", "adjusted");
 		return "adjustattributeweights";
@@ -576,7 +694,26 @@ public class WebtestController {
 		}
 		return countryList;
 	}
-
+	/*finds max score for maturity for assessment */
+   private double maxScoreMaturity(List<Attribute> attrs){
+	   double sum=0;
+	   for (Attribute attr: attrs){
+		   sum+=attr.getWeight()*4;
+	   }
+	   return sum;
+	   
+   }
+   /*finds max score for maturity for given sector */
+   private double maxScoreMaturityByCategory(List<Attribute> attrs, String category){
+	   double sum=0;
+	   for (Attribute attr: attrs){
+		   if (attr.getKpaCategories().get(0).getCategory().equals(category))
+			   sum+=4*attr.getSector_weight()/100;
+		   
+	   }
+	   return sum;
+	   
+   }
 	/*
 	 * @RequestMapping("/createoffer") public String createoffer(Model model,
 	 * Principal principal) { Offer offer = null; if (principal != null) {

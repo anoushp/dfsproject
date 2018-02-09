@@ -61,6 +61,8 @@
    
     <th scope="col">Assessment Username</th>
      <th scope="col">Assessment Title</th>
+     <th scope="col">Company Name</th>
+       <th scope="col">Sector</th>
     <th scope="col">Actions<th>
   </tr>
 </thead>
@@ -68,6 +70,8 @@
 <c:forEach var="assmt" items="${dfsassessments}">
 <tr><td><c:out value="${assmt.id.username}"></c:out></td>
 <td><c:out value="${assmt.id.title}"></c:out></td>
+<td><c:out value="${assmt.company.companyname}"></c:out></td>
+<td><c:out value="${assmt.company.opSectors}"></c:out></td>
 
 <td>
 	Actions

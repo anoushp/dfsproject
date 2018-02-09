@@ -38,7 +38,13 @@ public class AttributesService {
 		   attribute.setKpaCategories(attr.getKpaCategories());
 	   }
    }
-
+   public void updateAttributeWeight(Attribute attr) {
+	   Attribute attribute=attributesDao.getAttribute(attr.getId());
+	   if (attribute!=null){
+		   attribute.setWeight(attr.getWeight());
+		   attribute.setSector_weight(attr.getSector_weight());
+	   }
+   }
 	public void saveOrUpdate(Attribute ind) {
 		attributesDao.saveOrUpdate(ind);
 	}
