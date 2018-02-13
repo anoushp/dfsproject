@@ -32,7 +32,7 @@ public class MatlevelCompletionCriteriaValidator implements ConstraintValidator<
 				context.buildConstraintViolationWithTemplate("You can ONLY select 2 indicators on adjacent maturity levels").addPropertyNode("matlevels").addConstraintViolation();
 				return false;
 			}
-
+        
 			if (!(completion_level.get(value1-1).equals(completion_level.get(value2-1))) || completion_level.get(value1-1).equals("FULLY")|| completion_level.get(value2-1).equals("FULLY")){
 				context.buildConstraintViolationWithTemplate("You can ONLY select 2 indicators that satisfy partially complete criteria").addPropertyNode("completion_criteria").addConstraintViolation();
 				return false;
@@ -40,6 +40,7 @@ public class MatlevelCompletionCriteriaValidator implements ConstraintValidator<
 
 			}
 		}
+		if (matlevels.size()==1){
 		int value1=Integer.valueOf(matlevels.get(0));
 		if (completion_level.get(value1-1).equals("")){
 			context.buildConstraintViolationWithTemplate("Completion criteria cannot be blank for the indicators selected ").addPropertyNode("completion_criteria").addConstraintViolation();
@@ -51,11 +52,12 @@ public class MatlevelCompletionCriteriaValidator implements ConstraintValidator<
 				n++;
 			}
 		}
+		
 		if (n>matlevels.size()){
 			context.buildConstraintViolationWithTemplate("Please check you  have selected an indicator for the completion criteria chosen ").addPropertyNode("completion_criteria").addConstraintViolation();
 			return false;
 		}
-
+		}
 		//System.out.println("COMPLETRION CRITERIA   "+value.getCompletionCriteria().toString());
 		System.out.println("CHECKBOX   "+value.getMatlevels().toString());
 		return true;

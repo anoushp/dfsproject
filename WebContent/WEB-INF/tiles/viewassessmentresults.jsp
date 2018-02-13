@@ -102,7 +102,7 @@ function start() {
 		nameElement=nameElement.replace(']', '');
 		
 		var arrayNames = nameElement.split(",");
-		alert(arrayNames[0] + arrayNames[1]);
+		//alert(arrayNames[0] + arrayNames[1]);
 		for (j=0;j<arrayNames.length;j++){
 			arrayNames[j]=formatLabel(arrayNames[j], 30)
 		}

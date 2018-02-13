@@ -7,6 +7,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,6 +41,7 @@ public class AssessmentsDao {
 		Criteria crit=session().createCriteria(Assessment.class);
 
 		crit.add(Restrictions.eq("id.username", name));
+		crit.addOrder(Order.desc("score"));
         List<Assessment> aslist=crit.list();
         for (Assessment assessment:aslist){
 			 AssessmentCompany ac=assessment.getCompany();
@@ -53,7 +55,7 @@ public class AssessmentsDao {
 	@SuppressWarnings("unchecked")
 	public List<Assessment> getAllAssessments(){
 
-		List<Assessment> assessments =session().createQuery("from Assessment").list();
+		List<Assessment> assessments =session().createQuery("from Assessment a order by a.ascore DESC").list();
 		for (Assessment assessment:assessments){
 			 AssessmentCompany ac=assessment.getCompany();
 			if (ac!=null){

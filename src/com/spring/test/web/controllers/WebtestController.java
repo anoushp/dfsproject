@@ -264,6 +264,8 @@ public class WebtestController {
 			}
 			
 		}
+		assessment.setScore(new Double(score));
+		assessmentsService.saveOrUpdate(assessment);
 		System.out.println(max_score);
 		ArrayList<String> mapkeys=new ArrayList<String>();
 		ArrayList<String> categories=new ArrayList<String>();

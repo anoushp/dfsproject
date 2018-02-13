@@ -1,5 +1,6 @@
 package com.spring.test.web.dao;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -11,6 +12,9 @@ import javax.persistence.Table;
 public class Assessment {
 	@EmbeddedId
 	private AssessmentId id;
+	
+	@Column(name="score")
+	private Double score;
 
 	@OneToOne
 	@JoinColumn(name = "assessment_companies_id")
@@ -20,10 +24,11 @@ public class Assessment {
 
 	}
 
-	public Assessment(AssessmentId id, AssessmentCompany company) {
+	public Assessment(AssessmentId id, AssessmentCompany company, Double score) {
 		super();
 		this.id = id;
 		this.company = company;
+		this.score=score;
 	}
 
 	public AssessmentId getId() {
@@ -41,6 +46,15 @@ public class Assessment {
 	public void setCompany(AssessmentCompany company) {
 		this.company = company;
 	}
+	
+
+	public Double getScore() {
+		return score;
+	}
+
+	public void setScore(Double score) {
+		this.score = score;
+	}
 
 	@Override
 	public int hashCode() {
@@ -48,6 +62,7 @@ public class Assessment {
 		int result = 1;
 		result = prime * result + ((company == null) ? 0 : company.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((score == null) ? 0 : score.hashCode());
 		return result;
 	}
 
@@ -70,7 +85,15 @@ public class Assessment {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
+		if (score == null) {
+			if (other.score != null)
+				return false;
+		} else if (!score.equals(other.score))
+			return false;
 		return true;
 	}
+
+
+
 
 }

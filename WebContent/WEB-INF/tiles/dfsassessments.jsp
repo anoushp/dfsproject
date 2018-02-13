@@ -62,6 +62,7 @@
     <th scope="col">Company Name</th>
     <th scope="col">Company Size</th>
     <th scope="col">Sector</th>
+    <th scope="col">Score</th>
     <th scope="col">Actions/<th>
   </tr>
 </thead>
@@ -73,7 +74,14 @@
 <td><c:forEach items="${assmt.company.opSectors}" var="opSector" >
 	<c:out value="${opSector.sector}"></c:out><br>
 	</c:forEach></td>
-
+<td>
+<c:if test="${empty assmt.score}">
+N/A
+</c:if>
+<c:if test="${not empty assmt.score}">
+<c:out value="${assmt.score}"></c:out>
+</c:if>
+</td>
 
 <td>
 	<a href="${pageContext.request.contextPath}/dfsassessments/update/${assmt.id.title}">Update</a><br/>

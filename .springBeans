@@ -10,7 +10,6 @@
 		<config>src/com/spring/test/web/config/dao-context.xml</config>
 		<config>src/com/spring/test/web/config/service-context.xml</config>
 		<config>src/com/spring/test/web/config/security-context.xml</config>
-		<config>test/com/spring/test/web/test/config/datasource.xml</config>
 		<config>WebContent/WEB-INF/dfsmodel-servlet.xml</config>
 	</configs>
 	<autoconfigs>
