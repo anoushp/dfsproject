@@ -54,6 +54,9 @@ public class AssessmentDetails {
 	@Column(name="matlevel")
 	private int matlevel;
 	
+	@Column(name="score")
+	private Double score;
+
 	
 	@Column(name="matlevels")
 	@NotNull
@@ -74,7 +77,7 @@ public class AssessmentDetails {
 
 	
 
-	public AssessmentDetails(int id, Attribute attribute, Assessment assessment, int matlevel, List<String> matlevels,List<String> completion_criteria) {
+	public AssessmentDetails(int id, Attribute attribute, Assessment assessment, int matlevel, List<String> matlevels,List<String> completion_criteria, Double score) {
 		super();
 		this.id = id;
 		this.attribute = attribute;
@@ -82,6 +85,7 @@ public class AssessmentDetails {
 		this.matlevel = matlevel;
 		this.matlevels = matlevels;
 		this.completion_criteria = completion_criteria;
+		this.score=score;
 	}
 
 	public List<String> getMatlevels() {
@@ -124,6 +128,14 @@ public class AssessmentDetails {
 		this.matlevel = matlevel;
 	}
 
+	public Double getScore() {
+		return score;
+	}
+
+	public void setScore(Double score) {
+		this.score = score;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -134,6 +146,7 @@ public class AssessmentDetails {
 		result = prime * result + id;
 		result = prime * result + matlevel;
 		result = prime * result + ((matlevels == null) ? 0 : matlevels.hashCode());
+		result = prime * result + ((score == null) ? 0 : score.hashCode());
 		return result;
 	}
 
@@ -170,9 +183,15 @@ public class AssessmentDetails {
 				return false;
 		} else if (!matlevels.equals(other.matlevels))
 			return false;
+		if (score == null) {
+			if (other.score != null)
+				return false;
+		} else if (!score.equals(other.score))
+			return false;
 		return true;
 	}
 
+	
 	
 	
 	

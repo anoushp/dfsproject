@@ -207,15 +207,20 @@ public class WebtestController {
 		
 		double score=0;
 		double max_score=0;
+		//dictionary maps scores to category. Category score is the sum of scores of attributes withing that category
 		HashMap<String, Double> hm_score=new HashMap<String, Double>();
+		//dictionary that maps attributes and their corresponding scores to category. each category can have multiple attributes.e.g. collaboration.
 		HashMap<String, AttributeWeightData> hm_weight=new HashMap<String, AttributeWeightData>();
+		//stores corresponding for attributes in List<>
 		AttributeWeightData aweightdata;
+		double attr_score;
 		for (KPACategory cat: cat_list){
 			hm_score.put(cat.getCategory(), new Double(0));
 			hm_weight.put(cat.getCategory(), new AttributeWeightData());
 		}
 		
 		for (AssessmentDetails dfstest: dfstests){
+			attr_score=0;
 			matlevels=dfstest.getMatlevels();
 			completion_criteria=dfstest.getCompletion_criteria();
 			max_score+=dfstest.getAttribute().getWeight()*5/100.0;
@@ -225,6 +230,8 @@ public class WebtestController {
 			    
 			    List<String>attrnames=aweightdata.getAttrnames();
 			    List<Double>attrweights=aweightdata.getAttrweights();
+			    
+			//if only one maturity level option is selected    
 			if (matlevels.size()==1){
 				
 				int value1=Integer.valueOf(matlevels.get(0));
@@ -233,10 +240,12 @@ public class WebtestController {
 				    hm_score.put(cat, Double.sum(hm_score.get(cat).doubleValue(),value1*(dfstest.getAttribute().getSector_weight()/100.0)));
 				   
 				    attrnames.add(dfstest.getAttribute().getName());
-				    attrweights.add(value1*(dfstest.getAttribute().getSector_weight()/100.0));
-				  
+				    
+				    attr_score=value1*(dfstest.getAttribute().getSector_weight()/100.0);
+				    attrweights.add(attr_score);
 				    hm_weight.put(cat, aweightdata);
 				}
+				//if one maturity level is selected on "Partially" completion criteria
 				else if (completion_criteria.get(value1-1).equals("PARTIALLY")){
 					int value2=value1-1;
 					double mean=(value1+value2)/2.0;
@@ -244,12 +253,16 @@ public class WebtestController {
 					hm_score.put(cat, Double.sum(hm_score.get(cat).doubleValue(),mean*(dfstest.getAttribute().getSector_weight()/100.0)));
 				    aweightdata=hm_weight.get(cat);
 				    attrnames.add(dfstest.getAttribute().getName());
-				    attrweights.add(mean*(dfstest.getAttribute().getSector_weight()/100.0));
-				  
+				    
+				    attr_score=mean*(dfstest.getAttribute().getSector_weight()/100.0);
+				    attrweights.add(attr_score);
 				    hm_weight.put(cat, aweightdata);
 				}
+				
+				
 					
 			}
+			//if two adjacent maturity levels are selected
 			else if (matlevels.size()==2){
 				int value1=Integer.valueOf(matlevels.get(0)); 
 				int value2=Integer.valueOf(matlevels.get(1)); 
@@ -258,14 +271,19 @@ public class WebtestController {
 				hm_score.put(cat, Double.sum(hm_score.get(cat).doubleValue(),mean*(dfstest.getAttribute().getSector_weight()/100.0)));
 			    aweightdata=hm_weight.get(cat);
 			    attrnames.add(dfstest.getAttribute().getName());
-			    attrweights.add(mean*(dfstest.getAttribute().getSector_weight()/100.0));
-			  
+			    attr_score=mean*(dfstest.getAttribute().getSector_weight()/100.0);
+			    attrweights.add(attr_score);
 			    hm_weight.put(cat, aweightdata);
 			}
+			//sets the score for each attribute of the assessment
+			dfstest.setScore(new Double(attr_score));
+			assessmentDetailsService.saveOrUpdate(dfstest);
 			
 		}
+		//sets the total score of the assessment
 		assessment.setScore(new Double(score));
 		assessmentsService.saveOrUpdate(assessment);
+		
 		System.out.println(max_score);
 		ArrayList<String> mapkeys=new ArrayList<String>();
 		ArrayList<String> categories=new ArrayList<String>();
@@ -372,6 +390,7 @@ public class WebtestController {
 		asId.setTitle(dfstestForm.getTitle());
 		asId.setUsername(username);
 		a.setId(asId);
+		a.setScore(null);
 		// assessmentsService.delete(username,savedTitle);
 		assessmentsService.saveOrUpdate(a);
 
@@ -379,6 +398,7 @@ public class WebtestController {
 
 			AssessmentDetails dfs=dfsform.getAssessmentDetails();
 			dfs.getAssessment().setId(new AssessmentId(username, dfstestForm.getTitle()));
+			dfs.setScore(null);
 			assessmentDetailsService.saveOrUpdate(dfs);
 		}
 		if (!savedTitle.equals(dfstestForm.getTitle()))
